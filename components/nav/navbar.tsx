@@ -1,6 +1,7 @@
 //% libs
 import {useRouter} from "next/router";
 import Link from "next/link";
+import Image from "next/image";
 
 import {useState} from "react";
 import type {ReactEventHandler} from "react";
@@ -35,7 +36,14 @@ const NavBar = (props: Partial<NavBarPropsT>) => {
     <div className={styles.container}>
       <div className={styles.wrapper}>
         <a className={styles.logoLink} href="/">
-          <div className={styles.logoWrapper}>Netflix</div>
+          <div className={styles.logoWrapper}>
+            <Image
+              src="/static/netflix.svg"
+              alt="Netflix logo"
+              width="128px"
+              height="34px"
+            />
+          </div>
         </a>
         <ul className={styles.navItems}>
           <li className={styles.navItem} onClick={handleOnClickHome}>
@@ -51,6 +59,12 @@ const NavBar = (props: Partial<NavBarPropsT>) => {
             <button className={styles.usernameBtn} onClick={handleShowDropdown}>
               <p className={styles.username}>{username}</p>
               {/* Expand more icon */}
+              <Image
+                src="/static/expand_more.svg"
+                alt="Expand dropdown"
+                width="24px"
+                height="24px"
+              />
             </button>
 
             {showDropdown && (
