@@ -3,7 +3,8 @@ import type {NextPage} from "next";
 import Head from "next/head";
 
 //% comps
-import Banner from "../components/banner";
+import Banner from "../components/banner/banner";
+import NavBar from "../components/nav/navbar";
 
 //% styles
 import styles from "../styles/Home.module.css";
@@ -18,15 +19,14 @@ const Home: NextPage = () => {
       </Head>
 
       <main className={styles.main}>
-        <h1>Netflix</h1>
-
+        <NavBar username="ankita" />
         <Banner
           title="Clifford the red dog"
           subTitle="a very cute dog"
           imgUrl="/static/clifford.webp"
         />
 
-        {/* <NavBar />
+        {/* 
         <Card/> */}
       </main>
     </div>
