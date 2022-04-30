@@ -10,6 +10,7 @@ import styles from "./section-cards.module.css";
 //? Intersect with a size type?
 type SectionCardsPropsT = {
   title: string;
+  //! Change type
   videos: unknown[];
   size: "small" | "large" | "medium";
 };
@@ -27,7 +28,12 @@ const SectionCards = (_props: Partial<SectionCardsPropsT>) => {
         {_videos.map((_video, _idx) => {
           //! Change types
           return (
-            <Card idx={_idx} imgUrl={(_video as any).imgUrl} size={_size} key={uuid()} />
+            <Card
+              idx={_idx}
+              imgUrl={(_video as any).imgUrl}
+              size={_size}
+              key={uuid()}
+            />
           );
         })}
       </div>
