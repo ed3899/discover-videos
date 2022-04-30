@@ -12,18 +12,11 @@ import SectionCards from "../components/card/section-cards";
 //% styles
 import styles from "../styles/Home.module.css";
 
+//% data
+import {getVideos} from "../lib/videos";
+
 const Home: NextPage = () => {
-  const disneyVideos = [
-    {
-      imgUrl: defaultImg(),
-    },
-    {
-      imgUrl: defaultImg(),
-    },
-    {
-      imgUrl: defaultImg(),
-    },
-  ];
+  const disneyVideos = getVideos();
   return (
     <div className={styles.container}>
       <Head>
