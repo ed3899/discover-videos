@@ -29,10 +29,6 @@ const Home: NextPage = () => {
         />
 
         <SectionCards title="Disney" />
-
-        <Card imgUrl="/static/clifford.webp" size="large" />
-        <Card imgUrl="/static/clifford.webp" size="medium" />
-        <Card imgUrl="/static/clifford.webp" size="small" />
       </main>
     </div>
   );

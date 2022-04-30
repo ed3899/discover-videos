@@ -14,9 +14,17 @@ const SectionCards = (props: Partial<SectionCardsPropsT>) => {
     <section className={styles.container}>
       <h2 className={styles.title}>{title}</h2>
       <div className={styles.cardWrapper}>
-        <Card size="large" />
+        <Card imgUrl="/static/clifford.webp" size="large" />
+        <Card imgUrl="/static/clifford.webp" size="large" />
+        <Card imgUrl="/static/clifford.webp" size="large" />
+        <Card imgUrl="/static/clifford.webp" size="large" />
+        <Card imgUrl="/static/clifford.webp" size="large" />
+        <Card imgUrl="/static/clifford.webp" size="large" />
+        <Card imgUrl="/static/clifford.webp" size="large" />
+        <Card imgUrl="/static/clifford.webp" size="large" />
+        <Card imgUrl="/static/clifford.webp" size="large" />
+        <Card imgUrl="/static/clifford.webp" size="large" />
       </div>
-      Section Cards
     </section>
   );
 };
