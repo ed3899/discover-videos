@@ -4,26 +4,29 @@ import Card from "./card";
 //% styles
 import styles from "./section-cards.module.css";
 
+//? Intersect with a size type?
 type SectionCardsPropsT = {
   title: string;
+  videos: unknown[];
+  size: "small" | "large" | "medium";
 };
-const SectionCards = (props: Partial<SectionCardsPropsT>) => {
-  const {title = "Default title"} = props;
+const SectionCards = (_props: Partial<SectionCardsPropsT>) => {
+  const {
+    title: _title = "Default title",
+    videos: _videos = [],
+    size: _size = "large",
+  } = _props;
 
   return (
     <section className={styles.container}>
-      <h2 className={styles.title}>{title}</h2>
+      <h2 className={styles.title}>{_title}</h2>
       <div className={styles.cardWrapper}>
-        <Card imgUrl="/static/clifford.webp" size="large" idx={0} />
-        <Card imgUrl="/static/clifford.webp" size="large" />
-        <Card imgUrl="/static/clifford.webp" size="large" />
-        <Card imgUrl="/static/clifford.webp" size="large" />
-        <Card imgUrl="/static/clifford.webp" size="large" />
-        <Card imgUrl="/static/clifford.webp" size="large" />
-        <Card imgUrl="/static/clifford.webp" size="large" />
-        <Card imgUrl="/static/clifford.webp" size="large" />
-        <Card imgUrl="/static/clifford.webp" size="large" />
-        <Card imgUrl="/static/clifford.webp" size="large" />
+        {_videos.map((_video, _idx) => {
+          //! Change types
+          return (
+            <Card idx={_idx} imgUrl={(_video as any).imgUrl} size={_size} />
+          );
+        })}
       </div>
     </section>
   );

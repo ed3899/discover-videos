@@ -2,16 +2,28 @@
 import type {NextPage} from "next";
 import Head from "next/head";
 
+import {defaultImg} from "../utils";
+
 //% comps
 import Banner from "../components/banner/banner";
 import NavBar from "../components/nav/navbar";
-import Card from "../components/card/card";
 import SectionCards from "../components/card/section-cards";
 
 //% styles
 import styles from "../styles/Home.module.css";
 
 const Home: NextPage = () => {
+  const disneyVideos = [
+    {
+      imgUrl: defaultImg(),
+    },
+    {
+      imgUrl: defaultImg(),
+    },
+    {
+      imgUrl: defaultImg(),
+    },
+  ];
   return (
     <div className={styles.container}>
       <Head>
@@ -29,7 +41,8 @@ const Home: NextPage = () => {
         />
 
         <div className={styles.sectionWrapper}>
-          <SectionCards title="Disney" />
+          <SectionCards title="Disney" videos={disneyVideos} />
+          <SectionCards title="Disney" videos={disneyVideos} size="medium" />
         </div>
       </main>
     </div>
