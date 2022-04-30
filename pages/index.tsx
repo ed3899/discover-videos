@@ -28,7 +28,9 @@ const Home: NextPage = () => {
           imgUrl="/static/clifford.webp"
         />
 
-        <SectionCards title="Disney" />
+        <div className={styles.sectionWrapper}>
+          <SectionCards title="Disney" />
+        </div>
       </main>
     </div>
   );

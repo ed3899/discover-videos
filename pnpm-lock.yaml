@@ -4,6 +4,7 @@ specifiers:
   '@types/node': 17.0.30
   '@types/react': 18.0.8
   '@types/react-dom': 18.0.3
+  '@types/uuid': ^8.3.4
   classnames: ^2.3.1
   eslint: 8.14.0
   eslint-config-next: 12.1.5
@@ -12,13 +13,16 @@ specifiers:
   react: 18.1.0
   react-dom: 18.1.0
   typescript: 4.6.4
+  uuid: ^8.3.2
 
 dependencies:
+  '@types/uuid': 8.3.4
   classnames: 2.3.1
   framer-motion: 6.3.3_ef5jwxihqo6n7gxfmzogljlgcm
   next: 12.1.5_ef5jwxihqo6n7gxfmzogljlgcm
   react: 18.1.0
   react-dom: 18.1.0_react@18.1.0
+  uuid: 8.3.2
 
 devDependencies:
   '@types/node': 17.0.30
@@ -262,6 +266,10 @@ packages:
   /@types/scheduler/0.16.2:
     resolution: {integrity: sha512-hppQEBDmlwhFAXKJX2KnWLYu5yMfi91yazPb2l+lbJiwW+wdo1gNeRA+3RgNSO39WYX2euey41KEwnqesU2Jew==}
     dev: true
+
+  /@types/uuid/8.3.4:
+    resolution: {integrity: sha512-c/I8ZRb51j+pYGAu5CrFMRxqZ2ke4y2grEBO5AUjgSkSk+qT2Ea+OdWElz/OiMf5MNpn2b17kuVBwZLQJXzihw==}
+    dev: false
 
   /@typescript-eslint/parser/5.10.1_t725usgvqspm5woeqpaxbfp2qu:
     resolution: {integrity: sha512-GReo3tjNBwR5RnRO0K2wDIDN31cM3MmDtgyQ85oAxAmC5K3j/g85IjP+cDfcqDsDDBf1HNKQAD0WqOYL8jXqUA==}
@@ -1818,6 +1826,11 @@ packages:
     dependencies:
       punycode: 2.1.1
     dev: true
+
+  /uuid/8.3.2:
+    resolution: {integrity: sha512-+NYs2QeMWy+GWFOEm9xnn6HCDp0l7QBD7ml8zLUmJ+93Q5NF0NocErnwkTkXVFNiX3/fpC6afS8Dhb/gz7R7eg==}
+    hasBin: true
+    dev: false
 
   /v8-compile-cache/2.3.0:
     resolution: {integrity: sha512-l8lCEmLcLYZh4nbunNZvQCJc5pv7+RCwa8q/LdUx8u7lsWvPDKmpodJAJNwkAhJC//dFY48KuIEmjtd4RViDrA==}
