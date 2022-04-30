@@ -1,3 +1,6 @@
+//% libs
+import {v4 as uuid} from "uuid";
+
 //% comps
 import Card from "./card";
 
@@ -24,7 +27,7 @@ const SectionCards = (_props: Partial<SectionCardsPropsT>) => {
         {_videos.map((_video, _idx) => {
           //! Change types
           return (
-            <Card idx={_idx} imgUrl={(_video as any).imgUrl} size={_size} />
+            <Card idx={_idx} imgUrl={(_video as any).imgUrl} size={_size} key={uuid()} />
           );
         })}
       </div>
