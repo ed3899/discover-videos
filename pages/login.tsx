@@ -3,14 +3,31 @@ import type {NextPage} from "next";
 import Head from "next/head";
 import Image from "next/image";
 
-import {ReactEventHandler} from "react";
+import React, {ReactEventHandler, useState} from "react";
 
 //% styles
 import styles from "../styles/Login.module.css";
 
 const Login: NextPage = () => {
+  const [email, setEmail] = useState("");
+  const [userMsg, setUserMsg] = useState("");
+
+  const handleOnChangeEmail: React.ChangeEventHandler<
+    HTMLInputElement
+  > = e_ => {
+    setUserMsg("");
+    const email = e_.target.value;
+    setEmail(email);
+  };
   const handleLoginWithEmail: ReactEventHandler<HTMLButtonElement> = e_ => {
     e_.preventDefault();
+
+    if (email) {
+      //route to dashboard
+    } else {
+      //show use message
+      setUserMsg("Enter a valid use email address");
+    }
   };
 
   return (
@@ -39,12 +56,13 @@ const Login: NextPage = () => {
           <h1 className={styles.signinHeader}>Sign In</h1>
 
           <input
-            type="text"
+            type="email"
             placeholder="Email address"
             className={styles.emailInput}
+            onChange={handleOnChangeEmail}
           />
 
-          <p className={styles.userMsg}></p>
+          <p className={styles.userMsg}>{userMsg}</p>
 
           <button onClick={handleLoginWithEmail} className={styles.loginBtn}>
             Sign In
