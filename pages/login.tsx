@@ -14,12 +14,12 @@ const Login: NextPage = () => {
   };
 
   return (
-    <div>
+    <div className={styles.container}>
       <Head>
         <title>Netflix SignIn</title>
       </Head>
 
-      <header>
+      <header className={styles.header}>
         <div className={styles.headerWrapper}>
           <a className={styles.logoLink} href="/">
             <div className={styles.logoWrapper}>
@@ -32,25 +32,25 @@ const Login: NextPage = () => {
             </div>
           </a>
         </div>
-
-        <main className={styles.main}>
-          <div className={styles.mainWrapper}>
-            <h1 className={styles.signinHeader}>Sign In</h1>
-
-            <input
-              type="text"
-              placeholder="Email address"
-              className={styles.emailInput}
-            />
-
-            <p className={styles.userMsg}></p>
-
-            <button onClick={handleLoginWithEmail} className={styles.loginBtn}>
-              Sign In
-            </button>
-          </div>
-        </main>
       </header>
+
+      <main className={styles.main}>
+        <div className={styles.mainWrapper}>
+          <h1 className={styles.signinHeader}>Sign In</h1>
+
+          <input
+            type="text"
+            placeholder="Email address"
+            className={styles.emailInput}
+          />
+
+          <p className={styles.userMsg}></p>
+
+          <button onClick={handleLoginWithEmail} className={styles.loginBtn}>
+            Sign In
+          </button>
+        </div>
+      </main>
     </div>
   );
 };
