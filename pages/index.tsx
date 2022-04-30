@@ -14,6 +14,8 @@ import styles from "../styles/Home.module.css";
 //% data
 import {getVideos} from "../lib/videos";
 
+//%
+
 export const getServerSideProps = async () => {
   const disneyVideos = getVideos();
 
