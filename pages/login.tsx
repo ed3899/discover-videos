@@ -2,6 +2,7 @@
 import type {NextPage} from "next";
 import Head from "next/head";
 import Image from "next/image";
+import {useRouter} from "next/router";
 
 import React, {ReactEventHandler, useState} from "react";
 
@@ -11,6 +12,8 @@ import styles from "../styles/Login.module.css";
 const Login: NextPage = () => {
   const [email, setEmail] = useState("");
   const [userMsg, setUserMsg] = useState("");
+
+  const router = useRouter()
 
   const handleOnChangeEmail: React.ChangeEventHandler<
     HTMLInputElement
@@ -23,7 +26,11 @@ const Login: NextPage = () => {
     e_.preventDefault();
 
     if (email) {
-      //route to dashboard
+      if (email === "email") {
+        router.push("/")
+      } else {
+        setUserMsg("Something went wrong loggin in");
+      }
     } else {
       //show use message
       setUserMsg("Enter a valid use email address");
