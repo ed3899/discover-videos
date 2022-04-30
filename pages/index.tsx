@@ -15,11 +15,17 @@ import styles from "../styles/Home.module.css";
 import {getVideos} from "../lib/videos";
 
 export const getServerSideProps = async () => {
-  const disneyVideos = await getVideos();
+  const disneyVideos = await getVideos("disney trailer");
+  const productivityVideos = await getVideos("productivity");
+  const travelVideos = await getVideos("travel");
+  const popularVideos = await getVideos("popular");
 
   return {
     props: {
       disneyVideos,
+      travelVideos,
+      productivityVideos,
+      popularVideos,
     },
   };
 };
@@ -27,7 +33,7 @@ export const getServerSideProps = async () => {
 const Home: NextPage<
   InferGetServerSidePropsType<typeof getServerSideProps>
 > = props => {
-  const {disneyVideos} = props;
+  const {disneyVideos, travelVideos, productivityVideos,popularVideos} = props;
 
   return (
     <div className={styles.container}>
@@ -47,7 +53,13 @@ const Home: NextPage<
 
         <div className={styles.sectionWrapper}>
           <SectionCards title="Disney" videos={disneyVideos} />
-          <SectionCards title="Disney" videos={disneyVideos} size="medium" />
+          <SectionCards title="Travel" videos={travelVideos} size="small" />
+          <SectionCards
+            title="Productivity"
+            videos={productivityVideos}
+            size="medium"
+          />
+          <SectionCards title="Popular" videos={popularVideos} size="small" />
         </div>
       </main>
     </div>
