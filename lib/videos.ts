@@ -2,10 +2,18 @@
 import videoData from "../data/videos.json";
 
 //% types
-import type {VideoT} from "../types/youtube-api";
+import type {VideoT, YouTubeAPIResponse} from "../types/youtube-api";
 
-export const getVideos = (): VideoT[] => {
-  const videoArray = videoData.items.map(item => ({
+export const getVideos = async (): Promise<VideoT[]> => {
+  const YOUTUBE_API_KEY = process.env.YOUTUBE_API_KEY!;
+
+  const response = await fetch(
+    `https://youtube.googleapis.com/youtube/v3/search?part=snippet&maxResults=25&q=disney%20trailer&key=${YOUTUBE_API_KEY}`
+  );
+
+  const data = (await response.json()) as YouTubeAPIResponse;
+
+  const videoArray = data.items.map(item => ({
     title: item.snippet.title,
     imgUrl: item.snippet.thumbnails.high.url,
     id: item.id.videoId,
