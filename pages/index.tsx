@@ -1,8 +1,7 @@
 //% libs
 import type {NextPage} from "next";
 import Head from "next/head";
-
-import {defaultImg} from "../utils";
+import type {InferGetServerSidePropsType} from "next";
 
 //% comps
 import Banner from "../components/banner/banner";
@@ -15,8 +14,21 @@ import styles from "../styles/Home.module.css";
 //% data
 import {getVideos} from "../lib/videos";
 
-const Home: NextPage = () => {
+export const getServerSideProps = async () => {
   const disneyVideos = getVideos();
+
+  return {
+    props: {
+      disneyVideos,
+    },
+  };
+};
+
+const Home: NextPage<
+  InferGetServerSidePropsType<typeof getServerSideProps>
+> = props => {
+  const {disneyVideos} = props;
+
   return (
     <div className={styles.container}>
       <Head>

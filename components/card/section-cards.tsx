@@ -7,11 +7,8 @@ import Card from "./card";
 //% styles
 import styles from "./section-cards.module.css";
 
-type VideoT = {
-  title: string;
-  imgUrl: string;
-  id: string;
-};
+//% types
+import type {VideoT} from "../../types/youtube-api";
 
 //? Intersect with a size type?
 type SectionCardsPropsT = {
@@ -31,7 +28,7 @@ const SectionCards = (_props: Partial<SectionCardsPropsT>) => {
       <h2 className={styles.title}>{_title}</h2>
       <div className={styles.cardWrapper}>
         {_videos.map((_video, _idx) => {
-          //! Change types
+          //? Change key
           return (
             <Card idx={_idx} imgUrl={_video.imgUrl} size={_size} key={uuid()} />
           );
