@@ -1,4 +1,7 @@
+//% libs
 import Image from "next/image";
+
+import {placeholderImg} from "../../utils";
 
 //% styles
 import styles from "./banner.module.css";
@@ -12,7 +15,7 @@ const Banner = (_props: Partial<BannerPropsT>) => {
   const {
     title = "placeholder title",
     subTitle = "placeholder subTitle",
-    imgUrl = "https://cdn.shopify.com/s/files/1/0533/2089/files/placeholder-images-image_large.png?v=1530129081",
+    imgUrl = placeholderImg(),
   } = _props;
 
   const handleOnPlay = () => console.log("Handle on play");
