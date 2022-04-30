@@ -1,7 +1,7 @@
 //% libs
 import Image from "next/image";
 
-import {placeholderImg} from "../../utils";
+import {defaultImg} from "../../utils";
 
 //% styles
 import styles from "./card.module.css";
@@ -11,7 +11,7 @@ type CardPropsT = {
   size: "large" | "small" | "medium";
 };
 const Card = (props: Partial<CardPropsT>) => {
-  const {imgUrl = placeholderImg(), size} = props;
+  const {imgUrl = defaultImg(), size = "medium"} = props;
 
   const classMap: Record<CardPropsT["size"], string> = {
     large: styles.lgItem,
@@ -22,7 +22,7 @@ const Card = (props: Partial<CardPropsT>) => {
   return (
     <div className={styles.container}>
       Card
-      <div className={size ? classMap[size] : classMap["small"]}>
+      <div className={classMap[size]}>
         <Image
           src={imgUrl}
           alt="unknown"

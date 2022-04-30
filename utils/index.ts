@@ -1,1 +1,1 @@
-export const placeholderImg = () => "/static/placeholder.webp";
+export const defaultImg = () => "/static/placeholder.webp";

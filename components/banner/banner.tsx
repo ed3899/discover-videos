@@ -1,7 +1,7 @@
 //% libs
 import Image from "next/image";
 
-import {placeholderImg} from "../../utils";
+import {defaultImg} from "../../utils";
 
 //% styles
 import styles from "./banner.module.css";
@@ -15,7 +15,7 @@ const Banner = (_props: Partial<BannerPropsT>) => {
   const {
     title = "placeholder title",
     subTitle = "placeholder subTitle",
-    imgUrl = placeholderImg(),
+    imgUrl = defaultImg(),
   } = _props;
 
   const handleOnPlay = () => console.log("Handle on play");
