@@ -39,17 +39,25 @@ const NavBar = () => {
   }, []);
 
   //%
-  const handleOnClickHome: ReactEventHandler<HTMLLIElement> = e => {
-    e.preventDefault();
+  const handleOnClickHome: ReactEventHandler<HTMLLIElement> = e_ => {
+    e_.preventDefault();
     router.push("/");
   };
-  const handleOnClickMyList: ReactEventHandler<HTMLLIElement> = e => {
-    e.preventDefault();
+  const handleOnClickMyList: ReactEventHandler<HTMLLIElement> = e_ => {
+    e_.preventDefault();
     router.push("/browse/my-list");
   };
-  const handleShowDropdown: ReactEventHandler<HTMLButtonElement> = e => {
-    e.preventDefault();
+  const handleShowDropdown: ReactEventHandler<HTMLButtonElement> = e_ => {
+    e_.preventDefault();
     setShowDropdown(!showDropdown);
+  };
+  const handleSignOut: ReactEventHandler<HTMLAnchorElement> = async e_ => {
+    try {
+      await magic!.user.logout();
+      console.log(await magic!.user.isLoggedIn());
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (
@@ -90,8 +98,10 @@ const NavBar = () => {
             {showDropdown && (
               <div className={styles.navDropdown}>
                 <div>
-                  <Link href="/login">
-                    <a className={styles.linkName}>Sign out</a>
+                  <Link href="/login" passHref>
+                    <a className={styles.linkName} onClick={handleSignOut}>
+                      Sign out
+                    </a>
                   </Link>
                   <div className={styles.lineWrapper}></div>
                 </div>
