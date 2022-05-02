@@ -24,9 +24,10 @@ const Video: NextPage = () => {
         <div>
           <iframe
             id="ytplayer"
+            className={styles.videoPlayer}
             typeof="text/html"
             frameBorder="0"
-            width="640"
+            width="100%"
             height="360"
             src={`https://www.youtube.com/embed/${router.query.videoId}?autoplay=0&origin=http://example.com&controls=0&rel=0`}></iframe>
         </div>
