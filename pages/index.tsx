@@ -3,6 +3,8 @@ import type {NextPage} from "next";
 import Head from "next/head";
 import type {InferGetServerSidePropsType} from "next";
 
+import {magic} from "../lib/magic-client";
+
 //% comps
 import Banner from "../components/banner/banner";
 import NavBar from "../components/nav/navbar";
@@ -33,7 +35,7 @@ export const getServerSideProps = async () => {
 const Home: NextPage<
   InferGetServerSidePropsType<typeof getServerSideProps>
 > = props => {
-  const {disneyVideos, travelVideos, productivityVideos,popularVideos} = props;
+  const {disneyVideos, travelVideos, productivityVideos, popularVideos} = props;
 
   return (
     <div className={styles.container}>
