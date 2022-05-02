@@ -7,6 +7,9 @@ import cls from "classnames";
 
 import {getYouTubeVideosById} from "../../lib/videos";
 
+//% comps
+import NavBar from "../../components/nav/navbar";
+
 //% styles
 import styles from "../../styles/Video.module.css";
 
@@ -68,6 +71,7 @@ const Video: NextPage<
 
   return (
     <div className={styles.container}>
+      <NavBar />
       <Modal
         isOpen={true}
         contentLabel="Example Modal"
