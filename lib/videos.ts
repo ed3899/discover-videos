@@ -6,6 +6,7 @@ import type {
   VideoT,
   YouTubeAPIResponse,
   YouTubeError,
+  YouTubeVideosByID,
 } from "../types/youtube-api";
 
 //% data
@@ -13,7 +14,13 @@ import hardcodedData from "../data/videos.json";
 
 export const getVideos = async (
   searchQuery_: string
-): Promise<VideoT[] | []> => {
+): Promise<
+  | Omit<
+      VideoT,
+      "description" | "publishedAt" | "channelTitle" | "statistics"
+    >[]
+  | []
+> => {
   const YOUTUBE_API_KEY = process.env.YOUTUBE_API_KEY!;
   const encodedQuery = encodeURIComponent(searchQuery_);
   const BASE_URL = "youtube.googleapis.com/youtube/v3";
@@ -53,5 +60,56 @@ export const getVideos = async (
       JSON.stringify(error, null, "\t")
     );
     return [];
+  }
+};
+
+export const getYouTubeVideosById = async (
+  videoId_: string
+): Promise<VideoT[]> => {
+  const URL = `GET https://youtube.googleapis.com/youtube/v3/videos?part=snippet%2CcontentDetails%2Cstatistics&id=${videoId_}&key=${process.env.YOUTUBE_API_KEY}`;
+
+  const mockData = hardcodedData.items.map(item => ({
+    title: item.snippet.title,
+    imgUrl: item.snippet.thumbnails.high.url,
+    id: item.id.videoId || uuid(),
+    description: item.snippet.description,
+    publishedAt: item.snippet.publishedAt,
+    channelTitle: item.snippet.channelTitle,
+    statistics: {viewCount: 0},
+  }));
+
+  try {
+    const response = await fetch(URL);
+
+    const data = (await response.json()) as YouTubeVideosByID | YouTubeError;
+
+    if ((data as YouTubeError).error) {
+      console.error(
+        `There was an error in the request ${URL}`,
+        JSON.stringify((data as YouTubeError).error, null, "\t")
+      );
+
+      return mockData;
+    } else {
+      const videoArray = (data as YouTubeVideosByID).items.map(item => ({
+        title: item.snippet.title,
+        imgUrl: item.snippet.thumbnails.high.url,
+        id: item.id.videoId || uuid(),
+        description: item.snippet.description,
+        publishedAt: item.snippet.publishedAt,
+        channelTitle: item.snippet.channelTitle,
+        statistics: item.statistics
+          ? item.statistics.viewCount
+          : {viewCount: 0},
+      }));
+
+      return videoArray;
+    }
+  } catch (error) {
+    console.error(
+      `Something went wrong while fetching ${URL}`,
+      JSON.stringify(error, null, "\t")
+    );
+    return mockData;
   }
 };

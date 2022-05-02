@@ -2,8 +2,6 @@
 import {v4 as uuid} from "uuid";
 
 //% comps
-import Link from "next/link";
-
 import Card from "./card";
 
 //% styles
