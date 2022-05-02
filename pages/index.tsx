@@ -3,8 +3,6 @@ import type {NextPage} from "next";
 import Head from "next/head";
 import type {InferGetServerSidePropsType} from "next";
 
-import {magic} from "../lib/magic-client";
-
 //% comps
 import Banner from "../components/banner/banner";
 import NavBar from "../components/nav/navbar";
