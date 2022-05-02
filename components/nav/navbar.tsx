@@ -6,7 +6,7 @@ import Image from "next/image";
 import {useEffect, useState} from "react";
 import type {ReactEventHandler} from "react";
 
-import { Magic } from "magic-sdk";
+import {magic} from "../../lib/magic-client";
 
 import {weAreOnBrowser} from "../../utils";
 
@@ -19,16 +19,23 @@ type NavBarPropsT = {
 const NavBar = () => {
   //%
   const [showDropdown, setShowDropdown] = useState(false);
+  const [username, setUsername] = useState("");
 
   //%
   const router = useRouter();
 
   useEffect(() => {
-    if (weAreOnBrowser()) {
-      const getUser = async () => {
-        
-      };
-    }
+    const getUser = async () => {
+      try {
+        const {email} = await magic!.user.getMetadata();
+
+        if (email) setUsername(email);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    getUser();
   }, []);
 
   //%
@@ -70,7 +77,7 @@ const NavBar = () => {
         <nav className={styles.navContainer}>
           <div>
             <button className={styles.usernameBtn} onClick={handleShowDropdown}>
-              <p className={styles.username}>Username</p>
+              <p className={styles.username}>{username}</p>
               {/* Expand more icon */}
               <Image
                 src="/static/expand_more.svg"
