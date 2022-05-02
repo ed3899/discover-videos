@@ -1,7 +1,7 @@
 //%
 import {useRouter} from "next/router";
 
-import {useEffect} from "react";
+import {useEffect, useState} from "react";
 
 import {magic} from "../lib/magic-client";
 
@@ -12,6 +12,9 @@ import "../styles/globals.css";
 import type {AppProps} from "next/app";
 
 function MyApp({Component, pageProps}: AppProps) {
+  //%
+  const [isLoading, setIsLoading] = useState(true);
+  //%
   const router = useRouter();
 
   useEffect(() => {
@@ -27,7 +30,20 @@ function MyApp({Component, pageProps}: AppProps) {
 
     redirect();
   }, []);
-  return <Component {...pageProps} />;
+
+  useEffect(() => {
+    const handleComplete = () => {
+      setIsLoading(false);
+    };
+
+    router.events.on("routeChangeComplete", handleComplete);
+
+    return () => {
+      router.events.off("routeChangeComplete", handleComplete);
+    };
+  });
+
+  return isLoading ? <div>Loading...</div> : <Component {...pageProps} />;
 }
 
 export default MyApp;

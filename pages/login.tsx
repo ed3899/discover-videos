@@ -24,6 +24,7 @@ const Login: NextPage = () => {
     const handleComplete = () => {
       setIsLoading(false);
     };
+    //! handle errors
 
     router.events.on("routeChangeComplete", handleComplete);
 
