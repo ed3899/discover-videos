@@ -11,21 +11,26 @@ import {getYouTubeVideosById} from "../../lib/videos";
 import styles from "../../styles/Video.module.css";
 
 //% types
-import type {InferGetStaticPropsType, NextPage, GetStaticPaths} from "next";
+import type {
+  InferGetStaticPropsType,
+  NextPage,
+  GetStaticPaths,
+  GetStaticPropsContext,
+} from "next";
 import type {VideoT} from "../../types/youtube-api";
 
 Modal.setAppElement("#__next");
 
-export const getStaticProps = async () => {
+export const getStaticProps = async (context_: GetStaticPropsContext) => {
   //   const video = {
   //     title: "Some title",
   //     publishTime: "Some publish time",
   //     description: "Some massive description",
   //     channelTitle: "Some channel",
-  //     viewCount: 10000,
+  //     viewCount: 10000, "F4Z0GHWHe60"
   //   };
 
-  const videoId = "F4Z0GHWHe60";
+  const videoId = context_.params!.videoId as string;
 
   const videoArray = await getYouTubeVideosById(videoId);
 
