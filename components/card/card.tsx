@@ -1,5 +1,8 @@
 //% libs
 import Image from "next/image";
+import {useRouter} from "next/router";
+
+import {forwardRef} from "react";
 
 import {motion} from "framer-motion";
 
@@ -14,9 +17,18 @@ type CardPropsT = {
   imgUrl: string;
   size: "large" | "small" | "medium";
   idx: number;
+  videoId: string;
 };
 const Card = (props: Partial<CardPropsT>) => {
-  const {imgUrl = defaultImg(), size = "medium", idx} = props;
+  const {imgUrl = defaultImg(), size = "medium", idx, videoId} = props;
+
+  //%
+  const router = useRouter();
+
+  //%
+  const handleRouting = (videoId_: string) => {
+    router.push(`/video/${videoId_}`);
+  };
 
   const classMap: Record<CardPropsT["size"], string> = {
     large: styles.lgItem,
@@ -34,6 +46,7 @@ const Card = (props: Partial<CardPropsT>) => {
           alt="unknown"
           layout="fill"
           className={styles.cardImg}
+          onClick={() => handleRouting(videoId!)}
         />
       </motion.div>
     </div>

@@ -32,14 +32,13 @@ const SectionCards = (_props: Partial<SectionCardsPropsT>) => {
         {_videos.map((_video, _idx) => {
           //? Change key
           return (
-            <Link href={`/video/${videoId}`}>
-              <Card
-                idx={_idx}
-                imgUrl={_video.imgUrl}
-                size={_size}
-                key={uuid()}
-              />
-            </Link>
+            <Card
+              idx={_idx}
+              imgUrl={_video.imgUrl}
+              size={_size}
+              key={uuid()}
+              videoId={_video.id}
+            />
           );
         })}
       </div>
