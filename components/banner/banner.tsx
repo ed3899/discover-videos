@@ -18,7 +18,7 @@ const Banner = (_props: Partial<BannerPropsT>) => {
     title = "placeholder title",
     subTitle = "placeholder subTitle",
     imgUrl = defaultImg(),
-    videoId = "defaultId",
+    videoId = "F4Z0GHWHe60",
   } = _props;
 
   //%
