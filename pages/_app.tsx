@@ -1,9 +1,12 @@
-//%
+//% libs
 import {useRouter} from "next/router";
 
 import {useEffect, useState} from "react";
 
 import {magic} from "../lib/magic-client";
+
+//% comps
+import Loading from "../components/loading/loading";
 
 //% styles
 import "../styles/globals.css";
@@ -45,7 +48,7 @@ function MyApp({Component, pageProps}: AppProps) {
     };
   });
 
-  return isLoading ? <div>Loading...</div> : <Component {...pageProps} />;
+  return isLoading ? <Loading /> : <Component {...pageProps} />;
 }
 
 export default MyApp;
