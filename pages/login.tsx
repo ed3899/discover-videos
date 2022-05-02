@@ -16,6 +16,7 @@ import styles from "../styles/Login.module.css";
 const Login: NextPage = () => {
   const [email, setEmail] = useState("");
   const [userMsg, setUserMsg] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   const router = useRouter();
 
@@ -33,28 +34,34 @@ const Login: NextPage = () => {
 
     if (email) {
       if (email === "ed.wacc1995@gmail.com") {
-        // router.push("/");
-
         try {
           if (weAreOnBrowser()) {
             const magic = new Magic(
               process.env.NEXT_PUBLIC_MAGIC_PUBLISHABLE_API_KEY!
             );
 
+            setIsLoading(true);
+
             const didToken = await magic.auth.loginWithMagicLink({
               email,
             });
 
-            console.log(didToken);
+            if (didToken) {
+              setIsLoading(false);
+              router.push("/");
+            }
           }
         } catch (error) {
           console.error("Something went wrong", error);
+          setIsLoading(false);
         }
       } else {
-        setUserMsg("Something went wrong loggin in");
+        setIsLoading(false);
+        setUserMsg("Something went wrong logging in");
       }
     } else {
-      //show use message
+      //show user message
+      setIsLoading(false);
       setUserMsg("Enter a valid use email address");
     }
   };
@@ -94,7 +101,7 @@ const Login: NextPage = () => {
           <p className={styles.userMsg}>{userMsg}</p>
 
           <button onClick={handleLoginWithEmail} className={styles.loginBtn}>
-            Sign In
+            {isLoading ? "Loading..." : "Sign In"}
           </button>
         </div>
       </main>
