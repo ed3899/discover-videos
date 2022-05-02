@@ -4,7 +4,7 @@ import Head from "next/head";
 import Image from "next/image";
 import {useRouter} from "next/router";
 
-import React, {ReactEventHandler, useState} from "react";
+import React, {ReactEventHandler, useEffect, useState} from "react";
 
 import {Magic} from "magic-sdk";
 
@@ -19,6 +19,18 @@ const Login: NextPage = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   const router = useRouter();
+
+  useEffect(() => {
+    const handleComplete = () => {
+      setIsLoading(false);
+    };
+
+    router.events.on("routeChangeComplete", handleComplete);
+
+    return () => {
+      router.events.off("routeChangeComplete", handleComplete);
+    };
+  }, [router]);
 
   const handleOnChangeEmail: React.ChangeEventHandler<
     HTMLInputElement
@@ -47,7 +59,6 @@ const Login: NextPage = () => {
             });
 
             if (didToken) {
-              setIsLoading(false);
               router.push("/");
             }
           }
