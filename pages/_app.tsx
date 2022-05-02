@@ -37,9 +37,11 @@ function MyApp({Component, pageProps}: AppProps) {
     };
 
     router.events.on("routeChangeComplete", handleComplete);
+    router.events.on("routeChangeError", handleComplete);
 
     return () => {
       router.events.off("routeChangeComplete", handleComplete);
+      router.events.off("routeChangeError", handleComplete);
     };
   });
 

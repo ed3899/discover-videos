@@ -24,12 +24,13 @@ const Login: NextPage = () => {
     const handleComplete = () => {
       setIsLoading(false);
     };
-    //! handle errors
 
     router.events.on("routeChangeComplete", handleComplete);
+    router.events.on("routeChangeError", handleComplete);
 
     return () => {
       router.events.off("routeChangeComplete", handleComplete);
+      router.events.off("routeChangeError", handleComplete);
     };
   }, [router]);
 
