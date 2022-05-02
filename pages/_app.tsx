@@ -31,7 +31,7 @@ function MyApp({Component, pageProps}: AppProps) {
       }
     };
 
-    // redirect();
+    redirect();
   }, []);
 
   useEffect(() => {

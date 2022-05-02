@@ -2,6 +2,8 @@
 import {v4 as uuid} from "uuid";
 
 //% comps
+import Link from "next/link";
+
 import Card from "./card";
 
 //% styles
@@ -30,7 +32,14 @@ const SectionCards = (_props: Partial<SectionCardsPropsT>) => {
         {_videos.map((_video, _idx) => {
           //? Change key
           return (
-            <Card idx={_idx} imgUrl={_video.imgUrl} size={_size} key={uuid()} />
+            <Link href={`/video/${videoId}`}>
+              <Card
+                idx={_idx}
+                imgUrl={_video.imgUrl}
+                size={_size}
+                key={uuid()}
+              />
+            </Link>
           );
         })}
       </div>
