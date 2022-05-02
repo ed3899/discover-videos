@@ -1,7 +1,5 @@
 //% libs
-import type {NextPage} from "next";
 import Head from "next/head";
-import type {InferGetServerSidePropsType} from "next";
 
 //% comps
 import Banner from "../components/banner/banner";
@@ -13,6 +11,10 @@ import styles from "../styles/Home.module.css";
 
 //% data
 import {getVideos} from "../lib/videos";
+
+//% types
+import type {NextPage} from "next";
+import type {InferGetServerSidePropsType} from "next";
 
 export const getServerSideProps = async () => {
   const disneyVideos = await getVideos("disney trailer");
