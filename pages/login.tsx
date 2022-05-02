@@ -6,9 +6,7 @@ import {useRouter} from "next/router";
 
 import React, {ReactEventHandler, useEffect, useState} from "react";
 
-import {Magic} from "magic-sdk";
-
-import {weAreOnBrowser} from "../utils";
+import {magic} from "../lib/magic-client";
 
 //% styles
 import styles from "../styles/Login.module.css";
@@ -18,8 +16,10 @@ const Login: NextPage = () => {
   const [userMsg, setUserMsg] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
+  //%
   const router = useRouter();
 
+  //%
   useEffect(() => {
     const handleComplete = () => {
       setIsLoading(false);
@@ -32,6 +32,7 @@ const Login: NextPage = () => {
     };
   }, [router]);
 
+  //%
   const handleOnChangeEmail: React.ChangeEventHandler<
     HTMLInputElement
   > = e_ => {
@@ -47,20 +48,14 @@ const Login: NextPage = () => {
     if (email) {
       if (email === "ed.wacc1995@gmail.com") {
         try {
-          if (weAreOnBrowser()) {
-            const magic = new Magic(
-              process.env.NEXT_PUBLIC_MAGIC_PUBLISHABLE_API_KEY!
-            );
+          setIsLoading(true);
 
-            setIsLoading(true);
+          const didToken = await magic!.auth.loginWithMagicLink({
+            email,
+          });
 
-            const didToken = await magic.auth.loginWithMagicLink({
-              email,
-            });
-
-            if (didToken) {
-              router.push("/");
-            }
+          if (didToken) {
+            router.push("/");
           }
         } catch (error) {
           console.error("Something went wrong", error);
@@ -77,6 +72,7 @@ const Login: NextPage = () => {
     }
   };
 
+  //%
   return (
     <div className={styles.container}>
       <Head>

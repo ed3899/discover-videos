@@ -3,8 +3,12 @@ import {useRouter} from "next/router";
 import Link from "next/link";
 import Image from "next/image";
 
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import type {ReactEventHandler} from "react";
+
+import { Magic } from "magic-sdk";
+
+import {weAreOnBrowser} from "../../utils";
 
 //% styles
 import styles from "./navbar.module.css";
@@ -12,13 +16,22 @@ import styles from "./navbar.module.css";
 type NavBarPropsT = {
   username: string;
 };
-const NavBar = (props: Partial<NavBarPropsT>) => {
-  const {username = "Username placeholder"} = props;
-
+const NavBar = () => {
+  //%
   const [showDropdown, setShowDropdown] = useState(false);
 
+  //%
   const router = useRouter();
 
+  useEffect(() => {
+    if (weAreOnBrowser()) {
+      const getUser = async () => {
+        
+      };
+    }
+  }, []);
+
+  //%
   const handleOnClickHome: ReactEventHandler<HTMLLIElement> = e => {
     e.preventDefault();
     router.push("/");
@@ -57,7 +70,7 @@ const NavBar = (props: Partial<NavBarPropsT>) => {
         <nav className={styles.navContainer}>
           <div>
             <button className={styles.usernameBtn} onClick={handleShowDropdown}>
-              <p className={styles.username}>{username}</p>
+              <p className={styles.username}>Username</p>
               {/* Expand more icon */}
               <Image
                 src="/static/expand_more.svg"

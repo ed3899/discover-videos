@@ -44,7 +44,7 @@ const Home: NextPage<
       </Head>
 
       <main className={styles.main}>
-        <NavBar username="ankita" />
+        <NavBar />
         <Banner
           title="Clifford the red dog"
           subTitle="a very cute dog"
