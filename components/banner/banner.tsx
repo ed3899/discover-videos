@@ -1,5 +1,6 @@
 //% libs
 import Image from "next/image";
+import {useRouter} from "next/router";
 
 import {defaultImg} from "../../utils";
 
@@ -10,15 +11,22 @@ type BannerPropsT = {
   title: string;
   subTitle: string;
   imgUrl: string;
+  videoId: string;
 };
 const Banner = (_props: Partial<BannerPropsT>) => {
   const {
     title = "placeholder title",
     subTitle = "placeholder subTitle",
     imgUrl = defaultImg(),
+    videoId = "defaultId",
   } = _props;
 
-  const handleOnPlay = () => console.log("Handle on play");
+  //%
+  const router = useRouter();
+
+  const handleOnPlay = () => {
+    router.push(`video/${videoId}`)
+  };
 
   return (
     <div className={styles.container}>
