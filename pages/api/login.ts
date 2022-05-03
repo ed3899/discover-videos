@@ -3,7 +3,10 @@ import magicAdmin from "../../lib/magic";
 
 import jwt from "jsonwebtoken";
 
-import {isNewUser} from "../../lib/db/hasura";
+import {isNewUser, createNewUser} from "../../lib/db/hasura";
+
+//% utils
+import {traceColourfulRedError} from "../../utils";
 
 //% types
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
@@ -40,18 +43,30 @@ const login = async (req: NextApiRequest, res: NextApiResponse) => {
       // Check if user exists
       const isNewUserQuery = await isNewUser(token, metadata.issuer!);
 
-      res.send({done: true, isNewUserQuery});
-    } catch (error) {
-      console.error(`Something went wrong
-              Here's the error ${error}
-              `);
+      if (typeof isNewUserQuery === "boolean") {
+        if (isNewUserQuery) {
+          const createNewUserMutation = await createNewUser(token, metadata);
 
-      console.trace(error);
+          res.send({done: true, msg: "is a new user"});
+        } else {
+          res.send({done: true, msg: "not a new user"});
+        }
+      } else {
+        res.status(400).send({
+          done: false,
+          msg: "there was something wrong with your request",
+        });
+      }
+    } catch (error) {
+      traceColourfulRedError(error, 3);
 
       res.status(500).send({done: false});
     }
   } else {
-    res.send({done: false});
+    res.status(400).send({
+      done: false,
+      cause: "Invalid method, please use 'POST' in your headers instead",
+    });
   }
 };
 

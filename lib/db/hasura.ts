@@ -1,5 +1,8 @@
-//% libs
-import chalk from "chalk";
+//% utils
+import {traceColourfulRedError} from "../../utils";
+
+//% types
+import type {MagicUserMetadata} from "@magic-sdk/admin";
 
 /**
  * @abstract Base function for querying hasura graphql
@@ -55,14 +58,15 @@ const queryHasuraGraphQL = async (
       return jsonData as HasuraSuccessT;
     }
   } catch (error) {
-    const colourfulError = chalk.red(error);
-    console.trace(colourfulError);
+    traceColourfulRedError(error, 3);
   }
 };
 
 /**
  * @abstract Custom function for veryfing if a user exist in Hasura
  * @param token_ The JWT Token for Hasura authorization
+ * @param issuer_ The user that will be checked against the Hasura database
+ * @returns Boolean refering to the user/issuer_ existance. Undefined if there were any errors
  */
 export const isNewUser = async (token_: string, issuer_: string) => {
   const operationsDoc = `
@@ -88,8 +92,43 @@ export const isNewUser = async (token_: string, issuer_: string) => {
     // Verifies if the array is empty
     return res!.data.users.length === 0;
   } catch (error) {
-    const colourfulError = chalk.red(error);
-    console.trace(colourfulError);
+    traceColourfulRedError(error, 3);
+  }
+};
+
+export const createNewUser = async (
+  token_: string,
+  metadata_: MagicUserMetadata
+) => {
+  const {
+    issuer: issuer_,
+    email: email_,
+    publicAddress: publicAddress_,
+  } = metadata_;
+
+  const operationsDoc = `
+  mutation createNewUser($issuer: String!, $email: String!, $publicAddress: String!) {
+    insert_users(objects: {email: $email, issuer: $issuer, publicAddress: $publicAddress}) {
+      returning {
+        email
+        id
+        issuer
+      }
+    }
+  }
+`;
+
+  try {
+    const res = await queryHasuraGraphQL(
+      operationsDoc,
+      "createNewUser",
+      {issuer: issuer_, email: email_, publicAddress: publicAddress_},
+      token_
+    );
+
+    return res;
+  } catch (error) {
+    traceColourfulRedError(error, 3);
   }
 };
 
