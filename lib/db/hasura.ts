@@ -1,9 +1,9 @@
-const fetchGraphQL = async (
+const queryHasuraGraphQL = async (
   operationsDoc_: string,
   operationName_: string,
   variables_: Record<string, any>
 ) => {
-  const res = await fetch("https://real-maggot-86.hasura.app/v1/graphql", {
+  const res = await fetch(process.env.NEXT_PUBLIC_HASURA_ADMIN_URL!, {
     method: "POST",
     headers: {
       "content-type": "application/json",
@@ -20,22 +20,22 @@ const fetchGraphQL = async (
   return jsonData;
 };
 
-const operation = `
-    query MyQuery {
-      users {
-        id
-      }
-    }
-  `;
+// const operation = `
+//     query MyQuery {
+//       users {
+//         id
+//       }
+//     }
+//   `;
 
-const fetchMyQuery = async () => {
-  const res = await fetchGraphQL(operation, "MyQuery", {}).catch(error =>
-    console.error(`Error at fetchMyQuery ${error}`)
-  );
+// const fetchMyQuery = async () => {
+//   const res = await queryHasuraGraphQL(operation, "MyQuery", {}).catch(error =>
+//     console.error(`Error at fetchMyQuery ${error}`)
+//   );
 
-  if (res.errors) console.error(res.errors);
+//   if (res.errors) console.error(res.errors);
 
-  console.log(res.data);
-};
+//   console.log(res.data);
+// };
 
-export default fetchMyQuery;
+export default queryHasuraGraphQL;
