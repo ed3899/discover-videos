@@ -5,6 +5,8 @@ import jwt from "jsonwebtoken";
 
 import {isNewUser, createNewUser} from "../../lib/db/hasura";
 
+import setTokenCookie from "../../lib/cookies";
+
 //% utils
 import {traceColourfulRedError} from "../../utils";
 
@@ -47,8 +49,12 @@ const login = async (req: NextApiRequest, res: NextApiResponse) => {
         if (isNewUserQuery) {
           const createNewUserMutation = await createNewUser(token, metadata);
 
+          // Set the cookie
+          const cookie = setTokenCookie(token);
+          console.log({cookie});
           res.send({done: true, msg: "is a new user"});
         } else {
+          // Set the cookie
           res.send({done: true, msg: "not a new user"});
         }
       } else {
