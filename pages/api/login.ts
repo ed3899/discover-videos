@@ -6,6 +6,10 @@ type LoginDataT = {};
 const login = async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method === "POST") {
     try {
+      const auth = req.headers.authorization;
+      const token = auth ? auth.substring(7) : "";
+      console.log({token});
+
       res.send({done: true});
     } catch (error) {
       console.error(`Something went wrong
