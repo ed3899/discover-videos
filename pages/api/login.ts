@@ -1,14 +1,25 @@
+//% libs
+import magicAdmin from "../../lib/magic";
+
+//% types
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type {NextApiRequest, NextApiResponse} from "next";
 
 type LoginDataT = {};
-
+/**
+ * @abstract Authentication
+ * @param req 
+ * @param res 
+ */
 const login = async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method === "POST") {
     try {
+      //Extract and process token
       const auth = req.headers.authorization;
-      const token = auth ? auth.substring(7) : "";
-      console.log({token});
+      const didToken = auth ? auth.substring(7) : "";
+      const metadata = await magicAdmin.users.getMetadataByToken(didToken);
+
+      console.log({metadata});
 
       res.send({done: true});
     } catch (error) {

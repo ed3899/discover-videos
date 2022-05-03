@@ -8,14 +8,9 @@ import type {ReactEventHandler} from "react";
 
 import {magic} from "../../lib/magic-client";
 
-import {weAreOnBrowser} from "../../utils";
-
 //% styles
 import styles from "./navbar.module.css";
 
-type NavBarPropsT = {
-  username: string;
-};
 const NavBar = () => {
   //%
   const [showDropdown, setShowDropdown] = useState(false);
@@ -28,6 +23,9 @@ const NavBar = () => {
     const getUser = async () => {
       try {
         const {email} = await magic!.user.getMetadata();
+        const didToken = await magic!.user.getIdToken();
+
+        console.log({didToken});
 
         if (email) setUsername(email);
       } catch (error) {
