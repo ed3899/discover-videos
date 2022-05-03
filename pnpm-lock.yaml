@@ -8,6 +8,7 @@ specifiers:
   '@types/react-dom': 18.0.3
   '@types/react-modal': ^3.13.1
   '@types/uuid': ^8.3.4
+  chalk: ^5.0.1
   classnames: ^2.3.1
   eslint: 8.14.0
   eslint-config-next: 12.1.5
@@ -25,6 +26,7 @@ dependencies:
   '@magic-sdk/admin': 1.4.1
   '@types/react-modal': 3.13.1
   '@types/uuid': 8.3.4
+  chalk: 5.0.1
   classnames: 2.3.1
   framer-motion: 6.3.3_ef5jwxihqo6n7gxfmzogljlgcm
   jsonwebtoken: 8.5.1
@@ -756,6 +758,11 @@ packages:
       ansi-styles: 4.3.0
       supports-color: 7.2.0
     dev: true
+
+  /chalk/5.0.1:
+    resolution: {integrity: sha512-Fo07WOYGqMfCWHOzSXOt2CxDbC6skS/jO9ynEcmpANMoPrD+W1r1K6Vx7iNm+AQmETU1Xr2t+n8nzkV9t6xh3w==}
+    engines: {node: ^12.17.0 || ^14.13 || >=16.0.0}
+    dev: false
 
   /cipher-base/1.0.4:
     resolution: {integrity: sha512-Kkht5ye6ZGmwv40uUDZztayT2ThLQGfnj/T71N/XzeZeo3nf8foyW7zGTsPYkEya3m5f3cAypH+qe7YOrM1U2Q==}

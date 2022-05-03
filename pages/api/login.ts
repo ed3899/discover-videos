@@ -38,13 +38,15 @@ const login = async (req: NextApiRequest, res: NextApiResponse) => {
       );
 
       // Check if user exists
-      const isNewUserQuery = await isNewUser(token);
+      const isNewUserQuery = await isNewUser(token, metadata.issuer!);
 
       res.send({done: true, isNewUserQuery});
     } catch (error) {
       console.error(`Something went wrong
               Here's the error ${error}
               `);
+
+      console.trace(error);
 
       res.status(500).send({done: false});
     }
