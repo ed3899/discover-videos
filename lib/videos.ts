@@ -15,17 +15,19 @@ import hardcodedData from "../data/videos.json";
 export const getVideos = async (
   searchQuery_: string
 ): Promise<
-  | Omit<
-      VideoT,
-      "description" | "publishedAt" | "channelTitle" | "statistics"
-    >[]
-  | []
+  Omit<VideoT, "description" | "publishedAt" | "channelTitle" | "statistics">[]
 > => {
   const YOUTUBE_API_KEY = process.env.YOUTUBE_API_KEY!;
   const encodedQuery = encodeURIComponent(searchQuery_);
   const BASE_URL = "youtube.googleapis.com/youtube/v3";
   const PARAMS = `search?part=snippet&maxResults=25&q=${encodedQuery}`;
   const url = `https://${BASE_URL}/${PARAMS}&key=${YOUTUBE_API_KEY}`;
+
+  const mockData = hardcodedData.items.map(item => ({
+    title: item.snippet.title,
+    imgUrl: item.snippet.thumbnails.high.url,
+    id: item.id.videoId || uuid(),
+  }));
 
   try {
     const response = await fetch(url);
@@ -37,12 +39,6 @@ export const getVideos = async (
         `There was an error in the request ${url}`,
         JSON.stringify((data as YouTubeError).error, null, "\t")
       );
-
-      const mockData = hardcodedData.items.map(item => ({
-        title: item.snippet.title,
-        imgUrl: item.snippet.thumbnails.high.url,
-        id: item.id.videoId || uuid(),
-      }));
 
       return mockData;
     }
@@ -59,7 +55,7 @@ export const getVideos = async (
       `Something went wrong while fetching ${url}`,
       JSON.stringify(error, null, "\t")
     );
-    return [];
+    return mockData;
   }
 };
 

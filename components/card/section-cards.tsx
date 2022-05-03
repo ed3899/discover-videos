@@ -13,7 +13,10 @@ import type {VideoT} from "../../types/youtube-api";
 //? Intersect with a size type?
 type SectionCardsPropsT = {
   title: string;
-  videos: VideoT[];
+  videos: Omit<
+    VideoT,
+    "description" | "publishedAt" | "channelTitle" | "statistics"
+  >[];
   size: "small" | "large" | "medium";
 };
 const SectionCards = (_props: Partial<SectionCardsPropsT>) => {
