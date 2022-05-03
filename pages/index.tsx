@@ -1,6 +1,6 @@
 //% libs
 import Head from "next/head";
-import { fetchMyQuery } from "../lib/db/hasura";
+import fetchMyQuery from "../lib/db/hasura";
 
 //% comps
 import Banner from "../components/banner/banner";
@@ -38,7 +38,7 @@ const Home: NextPage<
 > = props => {
   const {disneyVideos, travelVideos, productivityVideos, popularVideos} = props;
 
-  fetchMyQuery()
+  fetchMyQuery();
 
   return (
     <div className={styles.container}>
