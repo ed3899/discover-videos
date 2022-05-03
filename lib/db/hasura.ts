@@ -1,3 +1,11 @@
+/**
+ * @abstract Base function for querying hasura graphql
+ * @param operationsDoc_ The string formatted query
+ * @param operationName_
+ * @param variables_ Variables for the query
+ * @param token_ The JWT Token for Hasura authorization
+ * @returns
+ */
 const queryHasuraGraphQL = async (
   operationsDoc_: string,
   operationName_: string,
@@ -21,22 +29,38 @@ const queryHasuraGraphQL = async (
   return jsonData;
 };
 
-// const operation = `
-//     query MyQuery {
-//       users {
-//         id
-//       }
-//     }
-//   `;
+/**
+ * @abstract Custom function for veryfing if a user exist in Hasura
+ * @param token_ The JWT Token for Hasura authorization
+ * @returns
+ */
+export const isNewUser = async (token_: string) => {
+  type HasuraResponseT = {
+    data: {
+      users: any[];
+    };
+  };
 
-// const fetchMyQuery = async () => {
-//   const res = await queryHasuraGraphQL(operation, "MyQuery", {}).catch(error =>
-//     console.error(`Error at fetchMyQuery ${error}`)
-//   );
+  //! Hardcoded issuer
+  const operation = `
+  query MyQuery {
+    users(where: {issuer: {_eq: "0"}}) {
+      id
+      email
+      issuer
+    }
+  }
+`;
 
-//   if (res.errors) console.error(res.errors);
+  const res = (await queryHasuraGraphQL(
+    operation,
+    "MyQuery",
+    {},
+    token_
+  )) as HasuraResponseT;
 
-//   console.log(res.data);
-// };
+  // Verifies if the array is empty
+  return res.data.users.length === 0;
+};
 
 export default queryHasuraGraphQL;

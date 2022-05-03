@@ -3,29 +3,26 @@ import magicAdmin from "../../lib/magic";
 
 import jwt from "jsonwebtoken";
 
+import {isNewUser} from "../../lib/db/hasura";
+
 //% types
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type {NextApiRequest, NextApiResponse} from "next";
 
-type LoginDataT = {};
 /**
- * @abstract Authentication
+ * @abstract Authentication route
  * @param req
  * @param res
  */
 const login = async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method === "POST") {
     try {
-      // Extract and process didToken from magic with magicSdk
+      // Extract and process the magic didToken from the headers with magicSdk
       const auth = req.headers.authorization;
       const didToken = auth ? auth.substring(7) : ""; //? gracefully fail when didToken not present
       const metadata = await magicAdmin.users.getMetadataByToken(didToken);
 
-      /**
-       * @abstract Creates a jwt token
-       * @summary Sets the initial date to now and the expiration date of the token 7 days in the  future in seconds.
-       * @link Signature struc - https://hasura.io/docs/latest/graphql/core/auth/authentication/jwt/#the-spec
-       */
+      // Create a jwt token using metadata from the didToken, sets the initial date to now and the expiration date of the token 7 days in the  future in seconds. This way, the user will only be able to access his/her data. For more information about the signature struc, please refer to https://hasura.io/docs/latest/graphql/core/auth/authentication/jwt/#the-spec
       const token = jwt.sign(
         {
           ...metadata,
@@ -37,12 +34,13 @@ const login = async (req: NextApiRequest, res: NextApiResponse) => {
             "x-hasura-user-id": `${metadata.issuer!}`,
           },
         },
-        "somesecret"
+        process.env.HASURA_GRAPHQL_JWT_SECRET!
       );
 
-      console.log({token});
+      // Check if user exists
+      const isNewUserQuery = await isNewUser(token);
 
-      res.send({done: true});
+      res.send({done: true, isNewUserQuery});
     } catch (error) {
       console.error(`Something went wrong
               Here's the error ${error}
