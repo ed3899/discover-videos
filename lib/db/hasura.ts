@@ -1,13 +1,14 @@
 const queryHasuraGraphQL = async (
   operationsDoc_: string,
   operationName_: string,
-  variables_: Record<string, any>
+  variables_: Record<string, any>,
+  token_: string
 ) => {
   const res = await fetch(process.env.NEXT_PUBLIC_HASURA_ADMIN_URL!, {
     method: "POST",
     headers: {
       "content-type": "application/json",
-      "x-hasura-admin-secret": process.env.NEXT_PUBLIC_HASURA_API_KEY!,
+      Authorization: `Bearer ${token_}`,
     },
     body: JSON.stringify({
       query: operationsDoc_,
