@@ -3,7 +3,7 @@ import type {NextApiRequest, NextApiResponse} from "next";
 
 import jwt from "jsonwebtoken";
 
-import {findVideoIdByUser} from "../../lib/db/hasura";
+import {findVideoIdByUser, updateStats} from "../../lib/db/hasura";
 
 //% utils
 import {traceColourfulRedError} from "../../utils";
@@ -48,26 +48,66 @@ const stats = async (
         process.env.HASURA_GRAPHQL_JWT_SECRET!
       ) as JSON_DecodedTokenT;
 
-      const doesStatsExist = await findVideoIdByUser(
+      const userId_ = decodedJWT_Token_.issuer;
+
+      const doesStatsExist_ = await findVideoIdByUser(
         token_,
-        decodedJWT_Token_.issuer,
+        userId_,
         videoId_
       );
 
-      if (typeof doesStatsExist === "boolean") {
-        if (doesStatsExist) {
+      if (typeof doesStatsExist_ === "boolean") {
+        if (doesStatsExist_) {
           // update it
+          const updatedStats_ = await updateStats(token_, {
+            favourited: 0,
+            watched: true,
+            userId: userId_,
+            videoId: "NNN",
+          });
+
+          if (updatedStats_) {
+            response_.status(200).send({
+              done: true,
+              decodedJWT_Token: decodedJWT_Token_,
+              response: updatedStats_,
+              errors: [],
+            });
+          } else {
+            response_.status(400).send({
+              done: false,
+              decodedJWT_Token: decodedJWT_Token_,
+              response: updatedStats_,
+              errors: [
+                {
+                  id: 1,
+                  cause: `There was an error updating the stats. ${updatedStats_} response`,
+                },
+              ],
+            });
+          }
         } else {
           // create it
+          response_.status(200).send({
+            done: true,
+            decodedJWT_Token: decodedJWT_Token_,
+            response: doesStatsExist_, //!
+            errors: [],
+          });
         }
+      } else {
+        response_.status(400).send({
+          done: false,
+          decodedJWT_Token: decodedJWT_Token_,
+          response: doesStatsExist_,
+          errors: [
+            {
+              id: 1,
+              cause: `There was an error while finding the video by user. ${doesStatsExist_} response`,
+            },
+          ],
+        });
       }
-
-      response_.send({
-        done: true,
-        decodedJWT_Token: decodedJWT_Token_,
-        response: doesStatsExist,
-        errors: [],
-      });
     } catch (error_) {
       const typedError_ = error_ as InstanceType<typeof Error>;
 
