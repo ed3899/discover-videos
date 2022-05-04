@@ -9,6 +9,8 @@ import {getYouTubeVideosById} from "../../lib/videos";
 
 //% comps
 import NavBar from "../../components/nav/navbar";
+import Like from "../../components/icons/like-icon";
+import DisLike from "../../components/icons/dislike-icon";
 
 //% styles
 import styles from "../../styles/Video.module.css";
@@ -22,8 +24,14 @@ import type {
 } from "next";
 import type {VideoT} from "../../types/youtube-api";
 
+// Attaches the modals to the app for SEO purposes
 Modal.setAppElement("#__next");
 
+/**
+ * @abstract Gets the static props on the server
+ * @param context_
+ * @returns
+ */
 export const getStaticProps = async (context_: GetStaticPropsContext) => {
   //   const video = {
   //     title: "Some title",
@@ -45,6 +53,10 @@ export const getStaticProps = async (context_: GetStaticPropsContext) => {
   };
 };
 
+/**
+ * @abstract Gets the static paths on the server
+ * @returns
+ */
 export const getStaticPaths: GetStaticPaths = async () => {
   const listOfVideos = ["F4Z0GHWHe60", "4zH5iYM4wJo", "KCPEHsAViiQ"];
 
@@ -86,6 +98,20 @@ const Video: NextPage<
           width="100%"
           height="360"
           src={`https://www.youtube.com/embed/${router.query.videoId}?autoplay=0&origin=http://example.com&controls=0&rel=0`}></iframe>
+
+        <div className={styles.likeDislikeBtnWrapper}>
+          <div className={styles.btnWrapper}>
+            <button>
+              <Like />
+            </button>
+          </div>
+
+          <div className={styles.btnWrapper}>
+            <button>
+              <DisLike />
+            </button>
+          </div>
+        </div>
 
         <div className={styles.modalBody}>
           <div className={styles.modalBodyContent}>
