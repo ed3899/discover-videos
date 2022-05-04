@@ -8,8 +8,8 @@ import type {MagicUserMetadata} from "@magic-sdk/admin";
  * @abstract Base function for querying hasura graphql
  * @param operationsDoc_ The string formatted query
  * @param operationName_ Name for the query
- * @param variables_ Variables for the query
- * @param token_ The JWT Token for Hasura authorization
+ * @param variables_ Variables for the GraphQL query
+ * @param token_ The raw JWT Token for Hasura authorization
  */
 const queryHasuraGraphQL = async (
   operationsDoc_: string,
@@ -100,7 +100,7 @@ export const isNewUser = async (token_: string, issuer_: string) => {
 
 /**
  * @abstract Custom function for creating a new user in Hasura database
- * @param token_ The JWT Token for Hasura authorization
+ * @param token_ The raw JWT Token for Hasura authorization
  * @param metadata_ The metadata obtained from the DID token once it has been proccessed by the magic SDK
  * @returns
  */
@@ -143,7 +143,7 @@ export const createNewUser = async (
 
 /**
  * @abstract Custom function for finding a video by user id
- * @param token_ The JWT Token for Hasura authorization
+ * @param token_ The raw JWT Token for Hasura authorization
  * @param userId_ The user id extracted from the decoded JWT
  * @param videoId_ The video id 
  * @returns
@@ -153,6 +153,7 @@ export const findVideoIdByUser = async (
   userId_: string,
   videoId_: string
 ) => {
+  // GraphQL Query
   const operationsDoc = `
   query findVideoIdByUserId($userId: String!, $videoId: String!) {
     stats(where: {userId: {_eq: $userId}, videoId: {_eq: $videoId}}) {
