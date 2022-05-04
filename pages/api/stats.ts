@@ -1,6 +1,8 @@
 //% libs
 import type {NextApiRequest, NextApiResponse} from "next";
 
+import jwt from "jsonwebtoken";
+
 //% utils
 import {traceColourfulRedError} from "../../utils";
 
@@ -22,7 +24,9 @@ const stats = (
 ) => {
   if (request_.method === "POST") {
     try {
-      if (!request_.cookies.token) {
+      const {token: token_} = request_.cookies;
+
+      if (!token_) {
         response_.status(401).send({
           done: false,
           errors: [
@@ -30,6 +34,15 @@ const stats = (
           ],
         });
       }
+
+      //? Type the response
+      
+      const decoded = jwt.verify(
+        token_,
+        process.env.HASURA_GRAPHQL_JWT_SECRET!
+      );
+
+      console.log({decoded});
 
       response_.send({done: true, errors: []});
     } catch (error_) {
