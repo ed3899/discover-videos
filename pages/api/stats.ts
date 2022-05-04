@@ -3,8 +3,13 @@ import type {NextApiRequest, NextApiResponse} from "next";
 
 import jwt from "jsonwebtoken";
 
+import {findVideoIdByUser} from "../../lib/db/hasura";
+
 //% utils
 import {traceColourfulRedError} from "../../utils";
+
+//% types
+import type {JSON_DecodedTokenT} from "../../types";
 
 type StatsApiResponseBodyT = {
   done: boolean;
@@ -36,11 +41,13 @@ const stats = (
       }
 
       //? Type the response
-      
+
       const decoded = jwt.verify(
         token_,
         process.env.HASURA_GRAPHQL_JWT_SECRET!
-      );
+      ) as JSON_DecodedTokenT;
+
+    //   const findVideoId = await findVideoIdByUser();
 
       console.log({decoded});
 

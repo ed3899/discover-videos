@@ -28,6 +28,7 @@ const queryHasuraGraphQL = async (
   };
 
   try {
+    // Main entry point for the graph QL server
     const res = await fetch(process.env.NEXT_PUBLIC_HASURA_ADMIN_URL!, {
       method: "POST",
       headers: {
@@ -69,6 +70,7 @@ const queryHasuraGraphQL = async (
  * @returns Boolean refering to the user/issuer_ existance. Undefined if there were any errors
  */
 export const isNewUser = async (token_: string, issuer_: string) => {
+  // GraphQL Query
   const operationsDoc = `
   query isNewUser($issuer: String!) {
     users(where: {issuer: {_eq: $issuer}}) {
@@ -96,6 +98,12 @@ export const isNewUser = async (token_: string, issuer_: string) => {
   }
 };
 
+/**
+ * @abstract Custom function for creating a new user in Hasura database
+ * @param token_ The JWT Token for Hasura authorization
+ * @param metadata_ The metadata obtained from the DID token once it has been proccessed by the magic SDK
+ * @returns
+ */
 export const createNewUser = async (
   token_: string,
   metadata_: MagicUserMetadata
@@ -106,6 +114,7 @@ export const createNewUser = async (
     publicAddress: publicAddress_,
   } = metadata_;
 
+  // GraphQL query
   const operationsDoc = `
   mutation createNewUser($issuer: String!, $email: String!, $publicAddress: String!) {
     insert_users(objects: {email: $email, issuer: $issuer, publicAddress: $publicAddress}) {
@@ -123,6 +132,44 @@ export const createNewUser = async (
       operationsDoc,
       "createNewUser",
       {issuer: issuer_, email: email_, publicAddress: publicAddress_},
+      token_
+    );
+
+    return res;
+  } catch (error) {
+    traceColourfulRedError(error, 3);
+  }
+};
+
+/**
+ * @abstract Custom function for finding a video by user id
+ * @param token_ The JWT Token for Hasura authorization
+ * @param userId_ The user id extracted from the decoded JWT
+ * @param videoId_ The video id 
+ * @returns
+ */
+export const findVideoIdByUser = async (
+  token_: string,
+  userId_: string,
+  videoId_: string
+) => {
+  const operationsDoc = `
+  query findVideoIdByUserId($userId: String!, $videoId: String!) {
+    stats(where: {userId: {_eq: $userId}, videoId: {_eq: $videoId}}) {
+      id
+      userId
+      videoId
+      watched
+      favourited
+    }
+  }
+`;
+
+  try {
+    const res = await queryHasuraGraphQL(
+      operationsDoc,
+      "findVideoIdByUserId",
+      {videoId: videoId_, userId: userId_},
       token_
     );
 

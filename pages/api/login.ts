@@ -37,6 +37,8 @@ const login = async (
       const metadata = await magicAdmin.users.getMetadataByToken(didToken);
 
       // Create a jwt token using metadata from the didToken, sets the initial date to now and the expiration date of the token 7 days in the  future in seconds. This way, the user will only be able to access his/her data. For more information about the signature struc, please refer to https://hasura.io/docs/latest/graphql/core/auth/authentication/jwt/#the-spec
+
+      //? Maybe add all of this inside a typed variable
       const token = jwt.sign(
         {
           ...metadata,
