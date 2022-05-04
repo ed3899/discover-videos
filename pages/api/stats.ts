@@ -4,13 +4,47 @@ import type {NextApiRequest, NextApiResponse} from "next";
 //% utils
 import {traceColourfulRedError} from "../../utils";
 
-const stats = (request_: NextApiRequest, response_: NextApiResponse) => {
+type StatsApiResponseBodyT = {
+  done: boolean;
+  errors:
+    | [
+        {
+          id: number;
+          cause: string;
+        }
+      ]
+    | [];
+};
+
+const stats = (
+  request_: NextApiRequest,
+  response_: NextApiResponse<StatsApiResponseBodyT>
+) => {
   if (request_.method === "POST") {
-    response_.send({done: true, msg: "It works", errors: []});
+    try {
+      if (!request_.cookies.token) {
+        response_.status(401).send({
+          done: false,
+          errors: [
+            {id: 1, cause: "You're not authorized to access this content"},
+          ],
+        });
+      }
+
+      response_.send({done: true, errors: []});
+    } catch (error_) {
+      const typedError_ = error_ as InstanceType<typeof Error>;
+
+      traceColourfulRedError(typedError_.message, 3);
+
+      response_.status(500).send({
+        done: false,
+        errors: [{id: 1, cause: typedError_.message}],
+      });
+    }
   } else {
     response_.status(400).send({
       done: false,
-      msg: "",
       errors: [
         {
           id: 1,

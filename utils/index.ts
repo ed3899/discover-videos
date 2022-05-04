@@ -9,12 +9,15 @@ export const weAreOnBrowser = () => typeof window !== "undefined";
  * @param error_
  * @param indentationLevels_
  */
-export const traceColourfulRedError = async (
+export const traceColourfulRedError = (
   error_: any,
   indentationLevels_: number
 ) => {
   const stringifiedError = JSON.stringify(error_, null, indentationLevels_);
   const colouredError = chalk.red(stringifiedError);
+  const formatedError = `${chalk.bold.bgBlack.redBright(
+    "Something went wrong at"
+  )}: ${colouredError}`;
 
-  console.trace(`Something went wrong at: ${colouredError}`);
+  console.trace(formatedError);
 };
