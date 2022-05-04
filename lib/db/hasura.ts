@@ -4,6 +4,19 @@ import {traceColourfulRedError} from "../../utils";
 //% types
 import type {MagicUserMetadata} from "@magic-sdk/admin";
 
+type HasuraDataT = {
+  users: unknown[];
+  stats: unknown[];
+};
+
+type HasuraSuccessT = {
+  data: Partial<HasuraDataT>;
+};
+
+type HasuraErrorT = {
+  errors: unknown[];
+};
+
 /**
  * @abstract Base function for querying hasura graphql
  * @param operationsDoc_ The string formatted query
@@ -17,16 +30,6 @@ const queryHasuraGraphQL = async (
   variables_: Record<string, any>,
   token_: string
 ) => {
-  type HasuraSuccessT = {
-    data: {
-      users: any[];
-    };
-  };
-
-  type HasuraErrorT = {
-    errors: any[];
-  };
-
   try {
     // Main entry point for the graph QL server
     const res = await fetch(process.env.NEXT_PUBLIC_HASURA_ADMIN_URL!, {
@@ -90,9 +93,10 @@ export const isNewUser = async (token_: string, issuer_: string) => {
     );
 
     //? Maybe customize an error
-
-    // Verifies if the array is empty
-    return res!.data.users.length === 0;
+    if (res?.data?.users) {
+      // Verifies if the array is empty
+      return res.data.users.length === 0;
+    }
   } catch (error) {
     traceColourfulRedError(error, 3);
   }
@@ -145,8 +149,8 @@ export const createNewUser = async (
  * @abstract Custom function for finding a video by user id
  * @param token_ The raw JWT Token for Hasura authorization
  * @param userId_ The user id extracted from the decoded JWT
- * @param videoId_ The video id 
- * @returns
+ * @param videoId_ The video id
+ * @returns Boolean refering to the videoId by user existance. Undefined if there were any errors
  */
 export const findVideoIdByUser = async (
   token_: string,
@@ -174,7 +178,10 @@ export const findVideoIdByUser = async (
       token_
     );
 
-    return res;
+    if (res?.data.stats) {
+      // Verify array length
+      return res.data.stats.length > 0;
+    }
   } catch (error) {
     traceColourfulRedError(error, 3);
   }

@@ -48,16 +48,24 @@ const stats = async (
         process.env.HASURA_GRAPHQL_JWT_SECRET!
       ) as JSON_DecodedTokenT;
 
-      const findVideoId = await findVideoIdByUser(
+      const doesStatsExist = await findVideoIdByUser(
         token_,
         decodedJWT_Token_.issuer,
         videoId_
       );
 
+      if (typeof doesStatsExist === "boolean") {
+        if (doesStatsExist) {
+          // update it
+        } else {
+          // create it
+        }
+      }
+
       response_.send({
         done: true,
         decodedJWT_Token: decodedJWT_Token_,
-        response: findVideoId,
+        response: doesStatsExist,
         errors: [],
       });
     } catch (error_) {
