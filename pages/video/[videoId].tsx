@@ -24,7 +24,7 @@ import type {
 } from "next";
 import type {VideoT} from "../../types/youtube-api";
 
-// Attaches the modals to the app for SEO purposes
+// Attaches the modal to the app for SEO purposes
 Modal.setAppElement("#__next");
 
 /**
@@ -75,11 +75,20 @@ export const getStaticPaths: GetStaticPaths = async () => {
 const Video: NextPage<
   InferGetStaticPropsType<typeof getStaticProps>
 > = props => {
+  //%
   const router = useRouter();
 
   //! Fix typing
-  const {title, publishedAt, description, channelTitle, statistics} =
-    props.video as VideoT;
+  const {
+    title: title_ = "No title",
+    publishedAt: publishedAt_ = "No publish date",
+    description: description_ = "No description",
+    channelTitle: channelTitle_ = "No channel title",
+    statistics: statistics_ = "No statistics",
+  } = props.video as VideoT;
+
+  const safeGuardedStatistics_ =
+    typeof statistics_ === "string" ? statistics_ : statistics_.viewCount;
 
   return (
     <div className={styles.container}>
@@ -118,22 +127,20 @@ const Video: NextPage<
         <div className={styles.modalBody}>
           <div className={styles.modalBodyContent}>
             <div className={styles.col1}>
-              <p className={styles.publishTime}>{publishedAt}</p>
-              <p className={styles.title}>{title}</p>
-              <p className={styles.description}>{description}</p>
+              <p className={styles.publishTime}>{publishedAt_}</p>
+              <p className={styles.title}>{title_}</p>
+              <p className={styles.description}>{description_}</p>
             </div>
 
             <div className={styles.col2}>
               <p className={cls(styles.subText, styles.subTextWrapper)}>
                 <span className={styles.textColor}>Cast: </span>
-                <span className={styles.channelTitle}>{channelTitle}</span>
+                <span className={styles.channelTitle}>{channelTitle_}</span>
               </p>
               <p className={cls(styles.subText, styles.subTextWrapper)}>
                 <span className={styles.textColor}>View Count: </span>
                 <span className={styles.channelTitle}>
-                  {typeof statistics === "string"
-                    ? statistics
-                    : statistics.viewCount}
+                  {safeGuardedStatistics_}
                 </span>
               </p>
             </div>
