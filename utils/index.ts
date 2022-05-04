@@ -5,7 +5,9 @@ export const defaultImg = () => "/static/placeholder.webp";
 export const weAreOnBrowser = () => typeof window !== "undefined";
 
 /**
- * @abstract Utility for trace-logging a colourful red error
+ * @abstract Utility for trace-logging a colourful red error.
+ * @summary It stringifies the error with JSON.stringify and colours it using chalk. This may cause
+ * unwanted formatting
  * @param error_
  * @param indentationLevels_
  */

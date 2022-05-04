@@ -3,7 +3,11 @@ import type {NextApiRequest, NextApiResponse} from "next";
 
 import jwt from "jsonwebtoken";
 
-import {findVideoIdByUser, updateStats} from "../../lib/db/hasura";
+import {
+  findVideoIdByUser,
+  insertStatsOne,
+  updateStats,
+} from "../../lib/db/hasura";
 
 //% utils
 import {traceColourfulRedError} from "../../utils";
@@ -47,7 +51,6 @@ const stats = async (
         token_,
         process.env.HASURA_GRAPHQL_JWT_SECRET!
       ) as JSON_DecodedTokenT;
-
       const userId_ = decodedJWT_Token_.issuer;
 
       const doesStatsExist_ = await findVideoIdByUser(
@@ -58,12 +61,12 @@ const stats = async (
 
       if (typeof doesStatsExist_ === "boolean") {
         if (doesStatsExist_) {
-          // update it
+          // Update video stats
           const updatedStats_ = await updateStats(token_, {
-            favourited: 0,
-            watched: true,
+            favourited: 4, //! Grab this from params
+            watched: false, //!
             userId: userId_,
-            videoId: "NNN",
+            videoId: videoId_,
           });
 
           if (updatedStats_) {
@@ -74,6 +77,7 @@ const stats = async (
               errors: [],
             });
           } else {
+            // Undefined response
             response_.status(400).send({
               done: false,
               decodedJWT_Token: decodedJWT_Token_,
@@ -87,15 +91,38 @@ const stats = async (
             });
           }
         } else {
-          // create it
-          response_.status(200).send({
-            done: true,
-            decodedJWT_Token: decodedJWT_Token_,
-            response: doesStatsExist_, //!
-            errors: [],
+          // Create video stats
+          const insertedStats_ = await insertStatsOne(token_, {
+            favourited: 0, //!
+            watched: false, //!
+            userId: userId_,
+            videoId: videoId_,
           });
+
+          if (insertedStats_) {
+            response_.status(200).send({
+              done: true,
+              decodedJWT_Token: decodedJWT_Token_,
+              response: insertedStats_,
+              errors: [],
+            });
+          } else {
+            // Undefined response
+            response_.status(400).send({
+              done: false,
+              decodedJWT_Token: decodedJWT_Token_,
+              response: insertedStats_,
+              errors: [
+                {
+                  id: 1,
+                  cause: `There was an error creating video stats. ${insertedStats_} response`,
+                },
+              ],
+            });
+          }
         }
       } else {
+        //Undefined response
         response_.status(400).send({
           done: false,
           decodedJWT_Token: decodedJWT_Token_,

@@ -1,3 +1,6 @@
+//% libs
+import chalk from "chalk";
+
 //% utils
 import {traceColourfulRedError} from "../../utils";
 
@@ -22,8 +25,8 @@ type HasuraErrorT = {
  * @param graphQL_Query_ The string formatted query
  * @param queryName_ Name for the query
  * @param variables_ Variables for the GraphQL query
- * @param token_ The raw JWT Token for Hasura authorization
- * @returns
+ * @param token_ The raw JWT Token for Hasura authentication
+ * @returns The Hasura GraphQL API response or undefined
  */
 const queryHasuraGraphQL = async (
   graphQL_Query_: string,
@@ -62,14 +65,17 @@ const queryHasuraGraphQL = async (
     } else {
       return jsonData as HasuraSuccessT;
     }
-  } catch (error) {
-    traceColourfulRedError(error, 3);
+  } catch (error_) {
+    const colouredError_ = chalk.red(
+      (error_ as InstanceType<typeof Error>).message
+    );
+    console.trace(colouredError_);
   }
 };
 
 /**
  * @abstract Custom function for veryfing if a user exist in Hasura
- * @param token_ The JWT Token for Hasura authorization
+ * @param token_ The raw JWT Token for Hasura authentication
  * @param issuer_ The user that will be checked against the Hasura database
  * @returns Boolean refering to the user/issuer_ existance. Undefined if there were any errors
  */
@@ -105,9 +111,9 @@ export const isNewUser = async (token_: string, issuer_: string) => {
 
 /**
  * @abstract Custom function for creating a new user in Hasura database
- * @param token_ The raw JWT Token for Hasura authorization
+ * @param token_ The raw JWT Token for Hasura authentication
  * @param metadata_ The metadata obtained from the DID token once it has been proccessed by the magic SDK
- * @returns
+ * @returns The new user created
  */
 export const createNewUser = async (
   token_: string,
@@ -148,7 +154,7 @@ export const createNewUser = async (
 
 /**
  * @abstract Custom function for finding a video by user id
- * @param token_ The raw JWT Token for Hasura authorization
+ * @param token_ The raw JWT Token for Hasura authentication
  * @param userId_ The user id extracted from the decoded JWT
  * @param videoId_ The video id
  * @returns Boolean refering to the videoId by user existance. Undefined if there were any errors
@@ -187,7 +193,30 @@ export const findVideoIdByUser = async (
   }
 };
 
-export const insertStatsOne = async () => {
+type InsertionAndUpdate_QueryVarsParamT = {
+  favourited: number;
+  userId: string;
+  watched: boolean;
+  videoId: string;
+};
+
+/**
+ * @abstract Creates videos stats with relation to a user
+ * @param token_ The raw JWT Token for Hasura authentication
+ * @param queryVars_ Variables for the GraphQL query in an object {}
+ * @returns The inserted stats
+ */
+export const insertStatsOne = async (
+  token_: string,
+  queryVars_: InsertionAndUpdate_QueryVarsParamT
+) => {
+  const {
+    favourited: favourited_,
+    userId: userId_,
+    watched: watched_,
+    videoId: videoId_,
+  } = queryVars_;
+
   const graphQL_Mutation = `
   mutation insertStatsOne($favourited: Int!, $userId: String!, $watched: Boolean!, $videoId: String!) {
     insert_stats_one(object: {favourited: $favourited, userId: $userId, videoId: $videoId, watched: $watched}) {
@@ -199,42 +228,55 @@ export const insertStatsOne = async () => {
     }
   }
 `;
+
+  const response_ = await queryHasuraGraphQL(
+    graphQL_Mutation,
+    "insertStatsOne",
+    {
+      favourited: favourited_,
+      userId: userId_,
+      watched: watched_,
+      videoId: videoId_,
+    },
+    token_
+  );
+
+  return response_;
 };
 
-type UpdateStats_QueryVarsParamT = {
-  favourited: number;
-  userId: string;
-  watched: boolean;
-  videoId: string;
-};
 /**
- * @abstract
- * @param token_ The raw JWT token
+ * @abstract Updates the stats of a video with relation to a user
+ * @param token_ The raw JWT token for Hasura authentication
+ * @param queryVars_ Variables for the GraphQL query in an object {}
+ * @returns The updated stats
  */
 export const updateStats = async (
   token_: string,
-  queryVars: UpdateStats_QueryVarsParamT
+  queryVars_: InsertionAndUpdate_QueryVarsParamT
 ) => {
   const {
     favourited: favourited_,
     userId: userId_,
     watched: watched_,
     videoId: videoId_,
-  } = queryVars;
+  } = queryVars_;
 
+  //! Fix query
   const graphQL_Mutation = `
   mutation updateStats($favourited: Int!, $userId: String!, $watched: Boolean!, $videoId: String!) {
-  update_stats(_set: {watched: $watched, favourited: $favourited}, 
-    where: {videoId: {_eq: $videoId}, userId: {_eq: $userId}}) {
-    favourited,
-    userId,
-    watched,
-    videoId
+    update_stats(where: {userId: {_eq: $userId}, videoId: {_eq: $videoId}}, _set: {watched: $watched, favourited: $favourited}) {
+      returning {
+        favourited
+        id
+        userId
+        videoId
+        watched
+      }
     }
   }
-  `;
+`;
 
-  const response = await queryHasuraGraphQL(
+  const response_ = await queryHasuraGraphQL(
     graphQL_Mutation,
     "updateStats",
     {
@@ -246,9 +288,9 @@ export const updateStats = async (
     token_
   );
 
-  console.log({response});
+  console.log({response_});
 
-  return response;
+  return response_;
 };
 
 export default queryHasuraGraphQL;
