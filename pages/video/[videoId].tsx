@@ -100,17 +100,19 @@ const Video: NextPage<
           src={`https://www.youtube.com/embed/${router.query.videoId}?autoplay=0&origin=http://example.com&controls=0&rel=0`}></iframe>
 
         <div className={styles.likeDislikeBtnWrapper}>
-          <div className={styles.btnWrapper}>
+          <div className={styles.likeBtnWrapper}>
             <button>
-              <Like />
+              <div className={styles.btnWrapper}>
+                <Like />
+              </div>
             </button>
           </div>
 
-          <div className={styles.btnWrapper}>
-            <button>
+          <button>
+            <div className={styles.btnWrapper}>
               <DisLike />
-            </button>
-          </div>
+            </div>
+          </button>
         </div>
 
         <div className={styles.modalBody}>
