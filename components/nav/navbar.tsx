@@ -8,6 +8,9 @@ import type {ReactEventHandler} from "react";
 
 import {magic} from "../../lib/magic-client";
 
+//% utils
+import {traceColourfulRedError} from "../../utils";
+
 //% styles
 import styles from "./navbar.module.css";
 
@@ -19,13 +22,14 @@ const NavBar = () => {
   //%
   const router = useRouter();
 
+  //%
   useEffect(() => {
     const getUser = async () => {
       try {
         const {email} = await magic!.user.getMetadata();
         const didToken = await magic!.user.getIdToken();
 
-        console.log({didToken});
+        // console.log({didToken});
 
         if (email) setUsername(email);
       } catch (error) {
@@ -37,24 +41,39 @@ const NavBar = () => {
   }, []);
 
   //%
+  /**
+   * @abstract Routes to "/"
+   * @param e_
+   */
   const handleOnClickHome: ReactEventHandler<HTMLLIElement> = e_ => {
     e_.preventDefault();
     router.push("/");
   };
+  /**
+   * @abstract Routes to "/browse/my-list"
+   * @param e_
+   */
   const handleOnClickMyList: ReactEventHandler<HTMLLIElement> = e_ => {
     e_.preventDefault();
     router.push("/browse/my-list");
   };
+  /**
+   * @abstract Toggles the dropdown state of "Sign Out"
+   * @param e_
+   */
   const handleShowDropdown: ReactEventHandler<HTMLButtonElement> = e_ => {
     e_.preventDefault();
     setShowDropdown(!showDropdown);
   };
-  const handleSignOut: ReactEventHandler<HTMLAnchorElement> = async e_ => {
+  /**
+   * @abstract Signs the user out using a magicSDK method on the client
+   */
+  const handleSignOut: ReactEventHandler<HTMLAnchorElement> = async () => {
     try {
       await magic!.user.logout();
-      console.log(await magic!.user.isLoggedIn());
+      // console.log(await magic!.user.isLoggedIn());
     } catch (error) {
-      console.error(error);
+      traceColourfulRedError(error, 3);
     }
   };
 

@@ -14,12 +14,21 @@ import {traceColourfulRedError} from "../../utils";
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type {NextApiRequest, NextApiResponse} from "next";
 
+export type LoginApiResponseBodyT = {
+  done: boolean;
+  msg?: string;
+  cause?: string;
+};
+
 /**
  * @abstract Authentication route
  * @param req_
  * @param res_
  */
-const login = async (req_: NextApiRequest, res_: NextApiResponse) => {
+const login = async (
+  req_: NextApiRequest,
+  res_: NextApiResponse<LoginApiResponseBodyT>
+) => {
   if (req_.method === "POST") {
     try {
       // Extract and process the magic didToken from the headers with magicSdk
@@ -74,7 +83,8 @@ const login = async (req_: NextApiRequest, res_: NextApiResponse) => {
   } else {
     res_.status(400).send({
       done: false,
-      cause: "Invalid method, please use 'POST' in your headers instead",
+      cause:
+        "Invalid method, please use {'method' : 'POST'} in your headers instead",
     });
   }
 };

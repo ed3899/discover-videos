@@ -8,8 +8,14 @@ import React, {ReactEventHandler, useEffect, useState} from "react";
 
 import {magic} from "../lib/magic-client";
 
+//% utils
+import {traceColourfulRedError} from "../utils";
+
 //% styles
 import styles from "../styles/Login.module.css";
+
+//% types
+import type {LoginApiResponseBodyT} from "./api/login";
 
 const Login: NextPage = () => {
   const [email, setEmail] = useState("");
@@ -35,6 +41,11 @@ const Login: NextPage = () => {
   }, [router]);
 
   //%
+  /**
+   * @abstract Set the email in the component state
+   * @param e_
+   * @returns void
+   */
   const handleOnChangeEmail: React.ChangeEventHandler<
     HTMLInputElement
   > = e_ => {
@@ -42,30 +53,47 @@ const Login: NextPage = () => {
     const email = e_.target.value;
     setEmail(email);
   };
+  /**
+   * @abstract Logs the user in using via magic SDK
+   * @description It uses a DID token behind the scenes, requires the user to check his/her email and click on the verification link, once that is done, the user is redirected to the '/' page.
+   * @param e_
+   */
   const handleLoginWithEmail: ReactEventHandler<
     HTMLButtonElement
   > = async e_ => {
     e_.preventDefault();
 
     if (email) {
-      if (email === "ed.wacc1995@gmail.com") {
-        try {
-          setIsLoading(true);
+      try {
+        setIsLoading(true);
 
-          const didToken = await magic!.auth.loginWithMagicLink({
-            email,
+        const didToken = await magic!.auth.loginWithMagicLink({
+          email,
+        });
+
+        if (didToken) {
+          const response = await fetch("/api/login", {
+            method: "POST",
+            headers: {
+              Authorization: `Bearer ${didToken}`,
+              "Content-Type": "application/json",
+            },
           });
 
-          if (didToken) {
+          const loggedInResponse =
+            (await response.json()) as LoginApiResponseBodyT;
+
+          if (loggedInResponse.done) {
+            console.log({loggedInResponse});
             router.push("/");
+          } else {
+            setIsLoading(false);
+            setUserMsg("Something went wrong logging in");
           }
-        } catch (error) {
-          console.error("Something went wrong", error);
-          setIsLoading(false);
         }
-      } else {
+      } catch (error) {
+        traceColourfulRedError(error, 3);
         setIsLoading(false);
-        setUserMsg("Something went wrong logging in");
       }
     } else {
       //show user message
