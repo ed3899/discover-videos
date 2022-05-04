@@ -247,7 +247,7 @@ export const updateStats = async (
   );
 
   console.log({response});
-  
+
   return response;
 };
 
