@@ -16,14 +16,14 @@ import type {NextApiRequest, NextApiResponse} from "next";
 
 /**
  * @abstract Authentication route
- * @param req
- * @param res
+ * @param req_
+ * @param res_
  */
-const login = async (req: NextApiRequest, res: NextApiResponse) => {
-  if (req.method === "POST") {
+const login = async (req_: NextApiRequest, res_: NextApiResponse) => {
+  if (req_.method === "POST") {
     try {
       // Extract and process the magic didToken from the headers with magicSdk
-      const auth = req.headers.authorization;
+      const auth = req_.headers.authorization;
       const didToken = auth ? auth.substring(7) : ""; //? gracefully fail when didToken not present
       const metadata = await magicAdmin.users.getMetadataByToken(didToken);
 
@@ -50,15 +50,17 @@ const login = async (req: NextApiRequest, res: NextApiResponse) => {
           const createNewUserMutation = await createNewUser(token, metadata);
 
           // Set the cookie
-          const cookie = setTokenCookie(token);
-          console.log({cookie});
-          res.send({done: true, msg: "is a new user"});
+          setTokenCookie(token, res_);
+
+          res_.send({done: true, msg: "is a new user"});
         } else {
           // Set the cookie
-          res.send({done: true, msg: "not a new user"});
+          setTokenCookie(token, res_);
+
+          res_.send({done: true, msg: "not a new user"});
         }
       } else {
-        res.status(400).send({
+        res_.status(400).send({
           done: false,
           msg: "there was something wrong with your request",
         });
@@ -66,10 +68,10 @@ const login = async (req: NextApiRequest, res: NextApiResponse) => {
     } catch (error) {
       traceColourfulRedError(error, 3);
 
-      res.status(500).send({done: false});
+      res_.status(500).send({done: false});
     }
   } else {
-    res.status(400).send({
+    res_.status(400).send({
       done: false,
       cause: "Invalid method, please use 'POST' in your headers instead",
     });
