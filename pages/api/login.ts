@@ -47,19 +47,20 @@ const login = async (req_: NextApiRequest, res_: NextApiResponse) => {
 
       if (typeof isNewUserQuery === "boolean") {
         if (isNewUserQuery) {
-          const createNewUserMutation = await createNewUser(token, metadata);
+          await createNewUser(token, metadata);
 
           // Set the cookie
           setTokenCookie(token, res_);
 
-          res_.send({done: true, msg: "is a new user"});
+          res_.send({done: true});
         } else {
           // Set the cookie
           setTokenCookie(token, res_);
 
-          res_.send({done: true, msg: "not a new user"});
+          res_.send({done: true});
         }
       } else {
+        // When value is undefined
         res_.status(400).send({
           done: false,
           msg: "there was something wrong with your request",
