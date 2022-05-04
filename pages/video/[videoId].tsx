@@ -1,6 +1,7 @@
 //% libs
 import {useRouter} from "next/router";
 
+import {useState} from "react";
 import Modal from "react-modal";
 
 import cls from "classnames";
@@ -75,10 +76,6 @@ export const getStaticPaths: GetStaticPaths = async () => {
 const Video: NextPage<
   InferGetStaticPropsType<typeof getStaticProps>
 > = props => {
-  //%
-  const router = useRouter();
-
-  //! Fix typing
   const {
     title: title_ = "No title",
     publishedAt: publishedAt_ = "No publish date",
@@ -89,6 +86,32 @@ const Video: NextPage<
 
   const safeGuardedStatistics_ =
     typeof statistics_ === "string" ? statistics_ : statistics_.viewCount;
+
+  //%
+  const router = useRouter();
+
+  //%
+  const [toggleLike, setToggleLike] = useState(false);
+  const [toggleDisLike, setToggleDisLike] = useState(false);
+
+  //%
+  /**
+   * @abstract Toggles dislike button
+   */
+  const handleToggleDislike = () => {
+    // This logic won't allow for undefined like
+    setToggleDisLike(!toggleDisLike);
+    setToggleLike(toggleDisLike);
+  };
+
+  /**
+   * @abstract Toggles like button
+   */
+  const handleToggleLike = () => {
+    // This logic won't allow for undefined like
+    setToggleLike(!toggleLike);
+    setToggleDisLike(toggleLike);
+  };
 
   return (
     <div className={styles.container}>
@@ -110,16 +133,16 @@ const Video: NextPage<
 
         <div className={styles.likeDislikeBtnWrapper}>
           <div className={styles.likeBtnWrapper}>
-            <button>
+            <button onClick={handleToggleLike}>
               <div className={styles.btnWrapper}>
-                <Like />
+                <Like selected={toggleLike} />
               </div>
             </button>
           </div>
 
-          <button>
+          <button onClick={handleToggleDislike}>
             <div className={styles.btnWrapper}>
-              <DisLike />
+              <DisLike selected={toggleDisLike} />
             </div>
           </button>
         </div>
