@@ -8,10 +8,24 @@ import SectionCards from "../../components/card/section-cards";
 import styles from "../../styles/MyList.module.css";
 
 //% type
-import type {NextPage} from "next";
+import type {
+  NextPage,
+  GetServerSidePropsResult,
+  GetServerSidePropsContext,
+} from "next";
 
-type MyListPropsT<T> = {
-  prop1: T;
+type Data = {
+  str: string;
+};
+
+export const getServerSideProps = (
+  context_: GetServerSidePropsContext
+): GetServerSidePropsResult<Data> => {
+  return {
+    props: {
+      str: "",
+    },
+  };
 };
 
 const MyList: NextPage = () => {

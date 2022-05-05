@@ -13,6 +13,12 @@ import type {
 //% data
 import hardcodedData from "../data/videos.json";
 
+/**
+ * @abstract Gets videos from the YouTube API
+ * @requires YOUTUBE_API_KEY on the .env.local(environment variables) file at the root of the project
+ * @param searchQuery_ The keyword to use for searching YouTube videos
+ * @returns YouTube videos or Mock videos if the request limit has been reached
+ */
 export const getVideos = async (
   searchQuery_: string
 ): Promise<
@@ -60,6 +66,12 @@ export const getVideos = async (
   }
 };
 
+/**
+ * @abstract Gets videos from the YouTube API by id
+ * @requires YOUTUBE_API_KEY on the .env.local(environment variables) file at the root of the project
+ * @param videoId_
+ * @returns Videos from YouTube or Mock data in case request limit has been reached
+ */
 export const getYouTubeVideosById = async (
   videoId_: string
 ): Promise<VideoT[]> => {
@@ -111,6 +123,13 @@ export const getYouTubeVideosById = async (
   }
 };
 
+/**
+ * @abstract Wrapper for getting watched videos
+ * @augments getWatchedVideos
+ * @param token_ The raw JWT Token
+ * @param userId_ The issuer from the decoded JWT Token
+ * @returns
+ */
 export const getWatchedItAgainVideos = async (
   token_?: string,
   userId_?: string
