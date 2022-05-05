@@ -1,8 +1,14 @@
+//% libs
+import {getMyListVideosWrapper} from "../../lib/videos";
+
 //% comps
 import Head from "next/head";
 
 import NavBar from "../../components/nav/navbar";
 import SectionCards from "../../components/card/section-cards";
+
+//% utils
+import {useRedirectUser} from "../../utils";
 
 //% styles
 import styles from "../../styles/MyList.module.css";
@@ -12,23 +18,43 @@ import type {
   NextPage,
   GetServerSidePropsResult,
   GetServerSidePropsContext,
+  InferGetServerSidePropsType,
 } from "next";
 
-type Data = {
-  str: string;
+type MyListDataT = {
+  videos: {
+    id: string;
+    imgUrl: string;
+  }[];
 };
 
-export const getServerSideProps = (
+export const getServerSideProps = async (
   context_: GetServerSidePropsContext
-): GetServerSidePropsResult<Data> => {
+): Promise<GetServerSidePropsResult<MyListDataT>> => {
+  const {userId: userId_, token: token_} = useRedirectUser(context_);
+
+  if (!userId_ || !token_) {
+    return {
+      redirect: {
+        destination: "/login",
+        permanent: false,
+      },
+    };
+  }
+
+  const myListVideos_ = await getMyListVideosWrapper(userId_, token_);
+
   return {
     props: {
-      str: "",
+      videos: myListVideos_,
     },
   };
 };
 
-const MyList: NextPage = () => {
+const MyList: NextPage<
+  InferGetServerSidePropsType<typeof getServerSideProps>
+> = props => {
+  const {videos} = props;
   return (
     <div>
       <Head>
@@ -38,7 +64,7 @@ const MyList: NextPage = () => {
       <main className={styles.main}>
         <NavBar />
         <div className={styles.sectionWrapper}>
-          <SectionCards title="My List" videos={[]} size="small" />
+          <SectionCards title="My List" videos={videos} size="small" />
         </div>
       </main>
     </div>

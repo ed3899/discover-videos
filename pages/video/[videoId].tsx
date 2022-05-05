@@ -110,6 +110,8 @@ const Video: NextPage<
 
     if (videoStats_.length > 0) {
       console.log({videoStats_});
+
+      //? Safeguard against undefined or null values
       const favourited_ = videoStats_[0].favourited;
 
       favourited_ === 1 ? setToggleLike(true) : setToggleDisLike(true);

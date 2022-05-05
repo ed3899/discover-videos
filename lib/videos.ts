@@ -1,6 +1,6 @@
 //% libs
 import {v4 as uuid} from "uuid";
-import {getWatchedVideos} from "./db/hasura";
+import {getMyListVideos, getWatchedVideos} from "./db/hasura";
 
 //% types
 import type {
@@ -151,4 +151,28 @@ export const getWatchedItAgainVideos = async (
   console.log(mappedResults);
 
   return mappedResults;
+};
+
+/**
+ *
+ * @param userId_ Issuer extracted from the decoded JWT token
+ * @param token_ The JWT
+ * @returns List of videos
+ */
+export const getMyListVideosWrapper = async (
+  userId_: string,
+  token_: string
+) => {
+  const videos_ = await getMyListVideos(userId_, token_);
+
+  if (typeof videos_ === "undefined") return []
+  
+  const mappedVideos_ = videos_.map(v => {
+    return {
+      id: v.videoId,
+      imgUrl: `https://i.ytimg.com/vi/${v.videoId}/maxresdefault.jpg`,
+    };
+  });
+
+  return mappedVideos_;
 };

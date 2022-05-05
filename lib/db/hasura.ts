@@ -6,7 +6,7 @@ import {traceColourfulRedError} from "../../utils";
 
 //% types
 import type {MagicUserMetadata} from "@magic-sdk/admin";
-import type {HasuraErrorT, HasuraSuccessT} from "../../types";
+import type {HasuraErrorT, HasuraSuccessT, VideoStatsT} from "../../types";
 
 //? Returned data type, generic
 /**
@@ -331,7 +331,8 @@ export const getMyListVideos = async (userId_: string, token_: string) => {
     token_
   );
 
-  console.log({response_});
+  if (response_?.data.stats)
+    return response_?.data.stats as unknown as Pick<VideoStatsT, "videoId">[];
 };
 
 export default queryHasuraGraphQL;
