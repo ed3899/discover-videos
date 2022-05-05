@@ -3,7 +3,7 @@ import Head from "next/head";
 import {getWatchedItAgainVideos} from "../lib/videos";
 
 //% utils
-import {verifyJWT_Token} from "../utils";
+import {useRedirectUser, verifyJWT_Token} from "../utils";
 
 //% comps
 import Banner from "../components/banner/banner";
@@ -26,19 +26,7 @@ import type {
 export const getServerSideProps = async (
   context_: GetServerSidePropsContext
 ) => {
-  const token = context_.req.cookies.token; //?
-
-  const userId = verifyJWT_Token(token);
-
-  if (!userId) {
-    return {
-      props: {},
-      redirect: {
-        destination: "/login",
-        permanent: false,
-      },
-    };
-  }
+  const {userId, token} = useRedirectUser(context_);
 
   const disneyVideos = await getVideos("disney trailer");
   const productivityVideos = await getVideos("productivity");

@@ -3,6 +3,7 @@ import chalk from "chalk";
 import jwt from "jsonwebtoken";
 
 //% types
+import type {GetServerSidePropsContext} from "next";
 import type {JSON_DecodedTokenT} from "../types";
 
 export const defaultImg = () => "/static/placeholder.webp";
@@ -44,4 +45,28 @@ export const verifyJWT_Token = (token_: string) => {
     const userId_ = decodedJWT_Token_.issuer;
     return userId_;
   }
+};
+
+/**
+ * @abstract An utility function for getting the userId from the context
+ * @param context_
+ * @returns The userId and Token or a redirect object if not found
+ */
+export const useRedirectUser = (context_: GetServerSidePropsContext) => {
+  const token_ = context_.req.cookies.token; //?
+
+  const userId_ = verifyJWT_Token(token_);
+
+  //? Is this right
+  if (!userId_) {
+    return {
+      props: {},
+      redirect: {
+        destination: "/login",
+        permanent: false,
+      },
+    };
+  }
+
+  return {userId: userId_, token: token_};
 };
