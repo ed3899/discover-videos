@@ -22,6 +22,9 @@ type HasuraErrorT = {
 
 /**
  * @abstract Base function for querying hasura graphql
+ * @async
+ * @requires NEXT_PUBLIC_HASURA_ADMIN_URL to be set in an .env.local(environment variables) file at the root of the project
+ * @throws Error, bounded by a try/catch block
  * @param graphQL_Query_ The string formatted query
  * @param queryName_ Name for the query
  * @param variables_ Variables for the GraphQL query
@@ -36,7 +39,7 @@ const queryHasuraGraphQL = async (
 ) => {
   try {
     // Main entry point for the graph QL server
-    const res = await fetch(process.env.NEXT_PUBLIC_HASURA_ADMIN_URL!, {
+    const res_ = await fetch(process.env.NEXT_PUBLIC_HASURA_ADMIN_URL!, {
       method: "POST",
       headers: {
         "content-type": "application/json",
@@ -49,22 +52,23 @@ const queryHasuraGraphQL = async (
       }),
     });
 
-    const jsonData = (await res.json()) as HasuraSuccessT | HasuraErrorT;
+    const jsonData_ = (await res_.json()) as HasuraSuccessT | HasuraErrorT;
 
-    if ((jsonData as HasuraErrorT).errors) {
+    if ((jsonData_ as HasuraErrorT).errors) {
       // Format and stringify error
       const hasuraErrors = JSON.stringify(
-        (jsonData as HasuraErrorT).errors,
+        (jsonData_ as HasuraErrorT).errors,
         null,
         3
       );
 
+      //? Maybe should return a new Error instead of throwing
       throw new Error(
         `There was an error in the Hasura response: ${hasuraErrors}`
       );
-    } else {
-      return jsonData as HasuraSuccessT;
     }
+
+    return jsonData_ as HasuraSuccessT;
   } catch (error_) {
     const colouredError_ = chalk.red(
       (error_ as InstanceType<typeof Error>).message
@@ -154,6 +158,7 @@ export const createNewUser = async (
 
 /**
  * @abstract Custom function for finding a video by user id
+ * @variation queryHasuraGraphQL error bounded
  * @param token_ The raw JWT Token for Hasura authentication
  * @param userId_ The user id extracted from the decoded JWT
  * @param videoId_ The video id
@@ -176,20 +181,15 @@ export const findVideoIdByUser = async (
   }
 `;
 
-  try {
-    const res = await queryHasuraGraphQL(
-      graphQL_Query,
-      "findVideoIdByUserId",
-      {videoId: videoId_, userId: userId_},
-      token_
-    );
+  const res = await queryHasuraGraphQL(
+    graphQL_Query,
+    "findVideoIdByUserId",
+    {videoId: videoId_, userId: userId_},
+    token_
+  );
 
-    if (res?.data.stats) {
-      // Verify array length
-      return res.data.stats;
-    }
-  } catch (error) {
-    traceColourfulRedError(error, 3);
+  if (res?.data.stats) {
+    return res.data.stats;
   }
 };
 
@@ -246,6 +246,8 @@ export const insertStatsOne = async (
 
 /**
  * @abstract Updates the stats of a video with relation to a user
+ * @async
+ * @variation queryHasuraGraphQL() Call this function with an updateStats query, throws an error
  * @param token_ The raw JWT token for Hasura authentication
  * @param queryVars_ Variables for the GraphQL query in an object {}
  * @returns The updated stats
@@ -261,7 +263,6 @@ export const updateStats = async (
     videoId: videoId_,
   } = queryVars_;
 
-  //! Fix query
   const graphQL_Mutation = `
   mutation updateStats($favourited: Int!, $userId: String!, $watched: Boolean!, $videoId: String!) {
     update_stats(where: {userId: {_eq: $userId}, videoId: {_eq: $videoId}}, _set: {watched: $watched, favourited: $favourited}) {
@@ -287,8 +288,6 @@ export const updateStats = async (
     },
     token_
   );
-
-  console.log({response_});
 
   return response_;
 };
