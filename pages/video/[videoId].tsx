@@ -89,6 +89,7 @@ const Video: NextPage<
 
   //%
   const router = useRouter();
+  const videoId = router.query.videoId ?? "";
 
   //%
   const [toggleLike, setToggleLike] = useState(false);
@@ -98,19 +99,47 @@ const Video: NextPage<
   /**
    * @abstract Toggles dislike button
    */
-  const handleToggleDislike = () => {
+  const handleToggleDislike = async () => {
     // This logic won't allow for undefined like
-    setToggleDisLike(!toggleDisLike);
+    const val = !toggleDisLike;
+    setToggleDisLike(val);
     setToggleLike(toggleDisLike);
+
+    const response = await fetch("/api/stats", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        videoId: videoId,
+        favourited: val ? 0 : 1,
+      }),
+    });
+
+    console.log(await response.json());
   };
 
   /**
    * @abstract Toggles like button
    */
-  const handleToggleLike = () => {
+  const handleToggleLike = async () => {
     // This logic won't allow for undefined like
-    setToggleLike(!toggleLike);
+    const val = !toggleLike;
+    setToggleLike(val);
     setToggleDisLike(toggleLike);
+
+    const response = await fetch("/api/stats", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        videoId: videoId,
+        favourited: val ? 1 : 0,
+      }),
+    });
+
+    console.log(await response.json());
   };
 
   return (
@@ -129,7 +158,7 @@ const Video: NextPage<
           frameBorder="0"
           width="100%"
           height="360"
-          src={`https://www.youtube.com/embed/${router.query.videoId}?autoplay=0&origin=http://example.com&controls=0&rel=0`}></iframe>
+          src={`https://www.youtube.com/embed/${videoId}?autoplay=0&origin=http://example.com&controls=0&rel=0`}></iframe>
 
         <div className={styles.likeDislikeBtnWrapper}>
           <div className={styles.likeBtnWrapper}>

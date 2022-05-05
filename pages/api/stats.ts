@@ -75,7 +75,7 @@ const stats = async (
         videoId_
       );
 
-      //? Maybe check the conditionals, too much else nesting. We may be able to do with less
+      //? Maybe change the conditionals, too much else nesting. We may be able to do with less
       if (typeof doesStatsExist_ === "boolean") {
         if (doesStatsExist_) {
           // Update video stats
