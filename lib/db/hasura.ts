@@ -157,7 +157,7 @@ export const createNewUser = async (
  * @param token_ The raw JWT Token for Hasura authentication
  * @param userId_ The user id extracted from the decoded JWT
  * @param videoId_ The video id
- * @returns Boolean refering to the videoId by user existance. Undefined if there were any errors
+ * @returns An array with the found videos
  */
 export const findVideoIdByUser = async (
   token_: string,
@@ -186,7 +186,7 @@ export const findVideoIdByUser = async (
 
     if (res?.data.stats) {
       // Verify array length
-      return res.data.stats.length > 0;
+      return res.data.stats;
     }
   } catch (error) {
     traceColourfulRedError(error, 3);
