@@ -1,5 +1,6 @@
 //% libs
 import {v4 as uuid} from "uuid";
+import {getWatchedVideos} from "./db/hasura";
 
 //% types
 import type {
@@ -108,4 +109,15 @@ export const getYouTubeVideosById = async (
     );
     return mockData;
   }
+};
+
+export const getWatchedItAgainVideos = async (
+  userId_: string,
+  token_: string
+) => {
+  const videos = await getWatchedVideos(userId_, token_);
+
+  if (typeof videos === "undefined") return [];
+
+  return videos;
 };

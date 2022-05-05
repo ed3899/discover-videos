@@ -285,7 +285,6 @@ export const getWatchedVideos = async (token_: string, userId_: string) => {
   query getWatchedVideos($userId: String!) {
     stats(where: {watched: {_eq: true}, userId: {_eq: $userId}}) {
       videoId
-      watched
     }
   }
 `;

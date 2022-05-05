@@ -1,6 +1,6 @@
 //% libs
 import Head from "next/head";
-import queryHasuraGraphQL from "../lib/db/hasura";
+import { getWatchedItAgainVideos } from "../lib/videos";
 
 //% comps
 import Banner from "../components/banner/banner";
@@ -22,6 +22,7 @@ export const getServerSideProps = async () => {
   const productivityVideos = await getVideos("productivity");
   const travelVideos = await getVideos("travel");
   const popularVideos = await getVideos("popular");
+  const watchItAgainVideos = await getWatchedItAgainVideos()
 
   return {
     props: {
@@ -29,6 +30,7 @@ export const getServerSideProps = async () => {
       travelVideos,
       productivityVideos,
       popularVideos,
+      watchItAgainVideos
     },
   };
 };
