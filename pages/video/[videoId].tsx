@@ -1,7 +1,7 @@
 //% libs
 import {useRouter} from "next/router";
 
-import {useState} from "react";
+import {useState, useEffect} from "react";
 import Modal from "react-modal";
 
 import cls from "classnames";
@@ -34,14 +34,6 @@ Modal.setAppElement("#__next");
  * @returns
  */
 export const getStaticProps = async (context_: GetStaticPropsContext) => {
-  //   const video = {
-  //     title: "Some title",
-  //     publishTime: "Some publish time",
-  //     description: "Some massive description",
-  //     channelTitle: "Some channel",
-  //     viewCount: 10000, "F4Z0GHWHe60"
-  //   };
-
   const videoId = context_.params!.videoId as string;
 
   const videoArray = await getYouTubeVideosById(videoId);
@@ -92,14 +84,36 @@ const Video: NextPage<
   const videoId = router.query.videoId ?? "";
 
   //%
-  const [toggleLike, setToggleLike] = useState(false);
-  const [toggleDisLike, setToggleDisLike] = useState(false);
+  /**
+   * @abstract An utility function for getting like info on a video id
+   * @async
+   * @internal
+   * @param videoId_
+   * @returns
+   */
+  const _getLikeInfo = async (videoId_: string) => {
+    const response = await fetch("/api/stats", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        videoId: videoId_,
+      }),
+    });
 
-  //%
+    const parsedResponse = await response.json();
+
+    console.log({parsedResponse});
+
+    return parsedResponse;
+  };
+
   /**
    * @abstract An utility function for running the rating service on Hasura
-   * @param favourited_ 
-   * @returns 
+   * @internal
+   * @param favourited_
+   * @returns
    */
   const _runRatingService = async (favourited_: number) => {
     const response = await fetch("/api/stats", {
@@ -117,6 +131,15 @@ const Video: NextPage<
   };
 
   //%
+  const [toggleLike, setToggleLike] = useState(false);
+  const [toggleDisLike, setToggleDisLike] = useState(false);
+
+  //%
+  useEffect(() => {
+    _getLikeInfo(videoId as string);
+  }, []);
+
+  //%
   /**
    * @abstract Toggles dislike button
    */
@@ -127,8 +150,6 @@ const Video: NextPage<
     setToggleLike(toggleDisLike);
 
     const response = await _runRatingService(val ? 0 : 1);
-
-    console.log(await response.json());
   };
 
   /**
@@ -141,8 +162,6 @@ const Video: NextPage<
     setToggleDisLike(toggleLike);
 
     const response = await _runRatingService(val ? 1 : 0);
-
-    console.log(await response.json());
   };
 
   return (

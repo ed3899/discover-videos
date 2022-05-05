@@ -35,11 +35,8 @@ const stats = async (
 ) => {
   try {
     const {token: token_} = request_.cookies;
-    const {
-      videoId: videoId_,
-      favourited: favourited_,
-      watched: watched_ = true,
-    } = request_.body;
+    const {favourited: favourited_, watched: watched_ = true} = request_.body;
+    const {videoId: videoId_} = request_.query;
 
     if (!token_) {
       response_.status(401).send({
@@ -67,7 +64,11 @@ const stats = async (
       process.env.HASURA_GRAPHQL_JWT_SECRET!
     ) as JSON_DecodedTokenT;
     const userId_ = decodedJWT_Token_.issuer;
-    const findVideo_ = await findVideoIdByUser(token_, userId_, videoId_);
+    const findVideo_ = await findVideoIdByUser(
+      token_,
+      userId_,
+      videoId_ as string
+    );
 
     if (typeof findVideo_ === "undefined") {
       response_.status(400).send({
@@ -93,7 +94,7 @@ const stats = async (
             favourited: favourited_,
             watched: watched_,
             userId: userId_,
-            videoId: videoId_,
+            videoId: videoId_ as string,
           });
 
           if (typeof updatedStats_ === "undefined") {
@@ -122,7 +123,7 @@ const stats = async (
             favourited: favourited_,
             watched: watched_,
             userId: userId_,
-            videoId: videoId_,
+            videoId: videoId_ as string,
           });
 
           if (typeof insertedStats_ === "undefined") {
