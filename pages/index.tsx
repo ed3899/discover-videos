@@ -1,6 +1,6 @@
 //% libs
 import Head from "next/head";
-import { getWatchedItAgainVideos } from "../lib/videos";
+import {getWatchedItAgainVideos} from "../lib/videos";
 
 //% comps
 import Banner from "../components/banner/banner";
@@ -15,14 +15,40 @@ import {getVideos} from "../lib/videos";
 
 //% types
 import type {NextPage} from "next";
-import type {InferGetServerSidePropsType} from "next";
+import type {
+  InferGetServerSidePropsType,
+  GetServerSidePropsContext,
+  GetServerSidePropsResult,
+} from "next";
+import {VideoT} from "../types/youtube-api";
+import {VideoStatsT} from "../types";
 
-export const getServerSideProps = async () => {
+type ServerPropsResultsT =
+  | Omit<VideoT, "description" | "publishedAt" | "channelTitle" | "statistics">
+  | VideoStatsT;
+
+type ServerPropsT_Index = {
+  [idx: string]: ServerPropsResultsT[];
+};
+
+export const getServerSideProps = async (
+  context_: GetServerSidePropsContext
+) => {
   const disneyVideos = await getVideos("disney trailer");
   const productivityVideos = await getVideos("productivity");
   const travelVideos = await getVideos("travel");
   const popularVideos = await getVideos("popular");
-  const watchItAgainVideos = await getWatchedItAgainVideos()
+  const watchItAgainVideos = await getWatchedItAgainVideos();
+
+  const result: GetServerSidePropsResult<ServerPropsT_Index> = {
+    props: {
+      disneyVideos,
+      travelVideos,
+      productivityVideos,
+      popularVideos,
+      watchItAgainVideos,
+    },
+  };
 
   return {
     props: {
@@ -30,7 +56,7 @@ export const getServerSideProps = async () => {
       travelVideos,
       productivityVideos,
       popularVideos,
-      watchItAgainVideos
+      watchItAgainVideos,
     },
   };
 };
