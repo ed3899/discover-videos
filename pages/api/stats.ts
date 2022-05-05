@@ -36,13 +36,29 @@ const stats = async (
   if (request_.method === "POST") {
     try {
       const {token: token_} = request_.cookies;
-      const videoId_ = request_.query.videoId as string;
+      const {
+        videoId: videoId_,
+        favourited: favourited_,
+        watched: watched_ = true,
+      } = request_.body;
 
       if (!token_) {
         response_.status(401).send({
           done: false,
           errors: [
             {id: 1, cause: "You're not authorized to access this content"},
+          ],
+        });
+      }
+
+      if (!videoId_) {
+        response_.status(400).send({
+          done: false,
+          errors: [
+            {
+              id: 1,
+              cause: "No video id was provided in the body of the request",
+            },
           ],
         });
       }
@@ -59,12 +75,13 @@ const stats = async (
         videoId_
       );
 
+      //? Maybe check the conditionals, too much else nesting. We may be able to do with less
       if (typeof doesStatsExist_ === "boolean") {
         if (doesStatsExist_) {
           // Update video stats
           const updatedStats_ = await updateStats(token_, {
-            favourited: 4, //! Grab this from params
-            watched: false, //!
+            favourited: favourited_,
+            watched: watched_,
             userId: userId_,
             videoId: videoId_,
           });
@@ -93,8 +110,8 @@ const stats = async (
         } else {
           // Create video stats
           const insertedStats_ = await insertStatsOne(token_, {
-            favourited: 0, //!
-            watched: false, //!
+            favourited: favourited_,
+            watched: watched_,
             userId: userId_,
             videoId: videoId_,
           });
