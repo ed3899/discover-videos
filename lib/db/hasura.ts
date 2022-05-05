@@ -6,19 +6,7 @@ import {traceColourfulRedError} from "../../utils";
 
 //% types
 import type {MagicUserMetadata} from "@magic-sdk/admin";
-
-type HasuraDataT = {
-  users: unknown[];
-  stats: unknown[];
-};
-
-type HasuraSuccessT = {
-  data: Partial<HasuraDataT>;
-};
-
-type HasuraErrorT = {
-  errors: unknown[];
-};
+import type {HasuraErrorT, HasuraSuccessT} from "../../types";
 
 /**
  * @abstract Base function for querying hasura graphql

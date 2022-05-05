@@ -24,6 +24,8 @@ import type {
   GetStaticPropsContext,
 } from "next";
 import type {VideoT} from "../../types/youtube-api";
+import type {StatsApiResponseBodyT} from "../api/stats";
+import type {VideoStatsT} from "../../types";
 
 // Attaches the modal to the app for SEO purposes
 Modal.setAppElement("#__next");
@@ -92,21 +94,26 @@ const Video: NextPage<
    * @returns
    */
   const _getLikeInfo = async (videoId_: string) => {
-    const response = await fetch("/api/stats", {
+    const params = new URLSearchParams();
+    params.append("videoId", videoId_);
+
+    const url_ = `/api/stats?${params.toString()}`;
+
+    const response_ = await fetch(url_, {
       method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        videoId: videoId_,
-      }),
     });
 
-    const parsedResponse = await response.json();
+    const data_ = (await response_.json()) as StatsApiResponseBodyT;
+    const videoStats_ = data_.response as VideoStatsT[];
 
-    console.log({parsedResponse});
+    //? What if no video
 
-    return parsedResponse;
+    if (videoStats_.length > 0) {
+      console.log({videoStats_});
+      const favourited_ = videoStats_[0].favourited;
+
+      favourited_ === 1 ? setToggleLike(true) : setToggleDisLike(true);
+    }
   };
 
   /**
@@ -115,8 +122,13 @@ const Video: NextPage<
    * @param favourited_
    * @returns
    */
-  const _runRatingService = async (favourited_: number) => {
-    const response = await fetch("/api/stats", {
+  const _runRatingService = async (favourited_: number, videoId_: string) => {
+    const params = new URLSearchParams();
+    params.append("videoId", videoId_);
+
+    const url = `/api/stats?${params.toString()}`;
+
+    const response = await fetch(url, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -149,7 +161,7 @@ const Video: NextPage<
     setToggleDisLike(val);
     setToggleLike(toggleDisLike);
 
-    const response = await _runRatingService(val ? 0 : 1);
+    await _runRatingService(val ? 0 : 1, videoId as string);
   };
 
   /**
@@ -161,7 +173,7 @@ const Video: NextPage<
     setToggleLike(val);
     setToggleDisLike(toggleLike);
 
-    const response = await _runRatingService(val ? 1 : 0);
+    await _runRatingService(val ? 1 : 0, videoId as string);
   };
 
   return (

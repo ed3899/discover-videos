@@ -15,10 +15,10 @@ import {traceColourfulRedError} from "../../utils";
 //% types
 import type {JSON_DecodedTokenT} from "../../types";
 
-type StatsApiResponseBodyT = {
+export type StatsApiResponseBodyT = {
   done: boolean;
   decodedJWT_Token: JSON_DecodedTokenT;
-  response: unknown;
+  response: unknown; //?
   errors:
     | [
         {
