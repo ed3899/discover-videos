@@ -119,5 +119,12 @@ export const getWatchedItAgainVideos = async (
 
   if (typeof videos === "undefined") return [];
 
-  return videos;
+  const mappedResults = videos.map(video => {
+    return {
+      id: video.id,
+      imgUrl: `https://i.ytimg.com/vi/${video.id}/maxresdefault.jpg`,
+    };
+  });
+
+  return mappedResults;
 };

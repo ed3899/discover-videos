@@ -25,7 +25,7 @@ import {VideoStatsT} from "../types";
 
 type ServerPropsResultsT =
   | Omit<VideoT, "description" | "publishedAt" | "channelTitle" | "statistics">
-  | VideoStatsT;
+  | unknown; //! Change
 
 type ServerPropsT_Index = {
   [idx: string]: ServerPropsResultsT[];
@@ -64,7 +64,13 @@ export const getServerSideProps = async (
 const Home: NextPage<
   InferGetServerSidePropsType<typeof getServerSideProps>
 > = props => {
-  const {disneyVideos, travelVideos, productivityVideos, popularVideos} = props;
+  const {
+    disneyVideos,
+    travelVideos,
+    productivityVideos,
+    popularVideos,
+    watchItAgainVideos,
+  } = props;
 
   return (
     <div className={styles.container}>
@@ -84,6 +90,11 @@ const Home: NextPage<
 
         <div className={styles.sectionWrapper}>
           <SectionCards title="Disney" videos={disneyVideos} />
+          <SectionCards
+            title="Watched it again"
+            videos={watchItAgainVideos}
+            size="small"
+          />
           <SectionCards title="Travel" videos={travelVideos} size="small" />
           <SectionCards
             title="Productivity"
