@@ -97,6 +97,27 @@ const Video: NextPage<
 
   //%
   /**
+   * @abstract An utility function for running the rating service on Hasura
+   * @param favourited_ 
+   * @returns 
+   */
+  const _runRatingService = async (favourited_: number) => {
+    const response = await fetch("/api/stats", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        videoId: videoId,
+        favourited: favourited_,
+      }),
+    });
+
+    return response;
+  };
+
+  //%
+  /**
    * @abstract Toggles dislike button
    */
   const handleToggleDislike = async () => {
@@ -105,16 +126,7 @@ const Video: NextPage<
     setToggleDisLike(val);
     setToggleLike(toggleDisLike);
 
-    const response = await fetch("/api/stats", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        videoId: videoId,
-        favourited: val ? 0 : 1,
-      }),
-    });
+    const response = await _runRatingService(val ? 0 : 1);
 
     console.log(await response.json());
   };
@@ -128,16 +140,7 @@ const Video: NextPage<
     setToggleLike(val);
     setToggleDisLike(toggleLike);
 
-    const response = await fetch("/api/stats", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        videoId: videoId,
-        favourited: val ? 1 : 0,
-      }),
-    });
+    const response = await _runRatingService(val ? 1 : 0);
 
     console.log(await response.json());
   };
