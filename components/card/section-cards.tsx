@@ -20,7 +20,7 @@ type SectionCardsPropsT = {
   videos: SectionCardVideoT[];
   size: "small" | "large" | "medium";
 };
-const SectionCards = (_props: Partial<SectionCardsPropsT>) => {
+const SectionCards = function (_props: Partial<SectionCardsPropsT>) {
   const {
     title: _title = "Default title",
     videos: _videos = [],
