@@ -112,19 +112,24 @@ export const getYouTubeVideosById = async (
 };
 
 export const getWatchedItAgainVideos = async (
-  userId_: string,
-  token_: string
+  token_?: string,
+  userId_?: string
 ) => {
-  const videos = await getWatchedVideos(userId_, token_);
+  if (typeof userId_ === "undefined" || userId_ === "") return [];
+  if (typeof token_ === "undefined") return [];
+
+  const videos = await getWatchedVideos(token_, userId_);
 
   if (typeof videos === "undefined") return [];
 
-  const mappedResults = videos.map(video => {
+  const mappedResults = videos.map(v => {
     return {
-      id: video.id,
-      imgUrl: `https://i.ytimg.com/vi/${video.id}/maxresdefault.jpg`,
+      id: v.videoId,
+      imgUrl: `https://i.ytimg.com/vi/${v.videoId}/maxresdefault.jpg`,
     };
   });
+
+  console.log(mappedResults);
 
   return mappedResults;
 };

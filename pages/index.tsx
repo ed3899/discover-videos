@@ -2,6 +2,9 @@
 import Head from "next/head";
 import {getWatchedItAgainVideos} from "../lib/videos";
 
+//% utils
+import {verifyJWT_Token} from "../utils";
+
 //% comps
 import Banner from "../components/banner/banner";
 import NavBar from "../components/nav/navbar";
@@ -18,37 +21,30 @@ import type {NextPage} from "next";
 import type {
   InferGetServerSidePropsType,
   GetServerSidePropsContext,
-  GetServerSidePropsResult,
 } from "next";
-import {VideoT} from "../types/youtube-api";
-import {VideoStatsT} from "../types";
-
-type ServerPropsResultsT =
-  | Omit<VideoT, "description" | "publishedAt" | "channelTitle" | "statistics">
-  | unknown; //! Change
-
-type ServerPropsT_Index = {
-  [idx: string]: ServerPropsResultsT[];
-};
 
 export const getServerSideProps = async (
   context_: GetServerSidePropsContext
 ) => {
+  const token = context_.req.cookies.token; //?
+
+  const userId = verifyJWT_Token(token);
+
+  if (!userId) {
+    return {
+      props: {},
+      redirect: {
+        destination: "/login",
+        permanent: false,
+      },
+    };
+  }
+
   const disneyVideos = await getVideos("disney trailer");
   const productivityVideos = await getVideos("productivity");
   const travelVideos = await getVideos("travel");
   const popularVideos = await getVideos("popular");
-  const watchItAgainVideos = await getWatchedItAgainVideos();
-
-  const result: GetServerSidePropsResult<ServerPropsT_Index> = {
-    props: {
-      disneyVideos,
-      travelVideos,
-      productivityVideos,
-      popularVideos,
-      watchItAgainVideos,
-    },
-  };
+  const watchItAgainVideos = await getWatchedItAgainVideos(token, userId);
 
   return {
     props: {

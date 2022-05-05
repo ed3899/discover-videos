@@ -1,5 +1,10 @@
 //% libs
 import chalk from "chalk";
+import jwt from "jsonwebtoken";
+
+//% types
+import type {JSON_DecodedTokenT} from "../types";
+
 export const defaultImg = () => "/static/placeholder.webp";
 
 export const weAreOnBrowser = () => typeof window !== "undefined";
@@ -22,4 +27,21 @@ export const traceColourfulRedError = (
   )}: ${colouredError}`;
 
   console.trace(formatedError);
+};
+
+/**
+ * @abstract Verifies a JWT token
+ * @requires HASURA_GRAPHQL_JWT_SECRET .Read from .env.local(environment variables) file at the root of the project
+ * @param token_
+ * @returns The issuer of the token
+ */
+export const verifyJWT_Token = (token_: string) => {
+  if (token_) {
+    const decodedJWT_Token_ = jwt.verify(
+      token_,
+      process.env.HASURA_GRAPHQL_JWT_SECRET!
+    ) as JSON_DecodedTokenT;
+    const userId_ = decodedJWT_Token_.issuer;
+    return userId_;
+  }
 };

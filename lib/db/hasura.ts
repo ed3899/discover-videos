@@ -8,6 +8,7 @@ import {traceColourfulRedError} from "../../utils";
 import type {MagicUserMetadata} from "@magic-sdk/admin";
 import type {HasuraErrorT, HasuraSuccessT} from "../../types";
 
+//? Returned data type, generic
 /**
  * @abstract Base function for querying hasura graphql
  * @async
@@ -281,6 +282,10 @@ export const updateStats = async (
 };
 
 export const getWatchedVideos = async (token_: string, userId_: string) => {
+  type WatchedVideosT = {
+    videoId: string;
+  };
+
   const graphQL_Query = `
   query getWatchedVideos($userId: String!) {
     stats(where: {watched: {_eq: true}, userId: {_eq: $userId}}) {
@@ -294,12 +299,12 @@ export const getWatchedVideos = async (token_: string, userId_: string) => {
     "getWatchedVideos",
     {
       userId: userId_,
-      watched: true,
     },
     token_
   );
 
-  return response_?.data.stats;
+  if (response_?.data.stats)
+    return response_?.data.stats as unknown as WatchedVideosT[];
 };
 
 export default queryHasuraGraphQL;

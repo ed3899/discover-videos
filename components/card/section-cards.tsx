@@ -10,13 +10,14 @@ import styles from "./section-cards.module.css";
 //% types
 import type {VideoT} from "../../types/youtube-api";
 
+type SectionCardVideoT =
+  | Omit<VideoT, "description" | "publishedAt" | "channelTitle" | "statistics">
+  | {id: string; imgUrl: string};
+
 //? Intersect with a size type?
 type SectionCardsPropsT = {
   title: string;
-  videos: Omit<
-    VideoT,
-    "description" | "publishedAt" | "channelTitle" | "statistics"
-  >[];
+  videos: SectionCardVideoT[];
   size: "small" | "large" | "medium";
 };
 const SectionCards = (_props: Partial<SectionCardsPropsT>) => {

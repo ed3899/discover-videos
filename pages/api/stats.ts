@@ -10,7 +10,7 @@ import {
 } from "../../lib/db/hasura";
 
 //% utils
-import {traceColourfulRedError} from "../../utils";
+import {verifyJWT_Token} from "../../utils";
 
 //% types
 import type {JSON_DecodedTokenT} from "../../types";
@@ -59,11 +59,18 @@ const stats = async (
       });
     }
 
-    const decodedJWT_Token_ = jwt.verify(
-      token_,
-      process.env.HASURA_GRAPHQL_JWT_SECRET!
-    ) as JSON_DecodedTokenT;
-    const userId_ = decodedJWT_Token_.issuer;
+    const userId_ = verifyJWT_Token(token_);
+
+    if (typeof userId_ === "undefined") {
+      return response_.status(400).send({
+        done: true,
+        response: userId_,
+        errors: [
+          {id: 1, cause: `User id obtained from JWT Token was ${userId_}`},
+        ],
+      });
+    }
+
     const findVideo_ = await findVideoIdByUser(
       token_,
       userId_,
@@ -73,7 +80,6 @@ const stats = async (
     if (typeof findVideo_ === "undefined") {
       response_.status(400).send({
         done: false,
-        decodedJWT_Token: decodedJWT_Token_,
         response: findVideo_,
         errors: [
           {
@@ -98,9 +104,8 @@ const stats = async (
           });
 
           if (typeof updatedStats_ === "undefined") {
-            response_.status(400).send({
+            return response_.status(400).send({
               done: false,
-              decodedJWT_Token: decodedJWT_Token_,
               response: updatedStats_,
               errors: [
                 {
@@ -111,9 +116,8 @@ const stats = async (
             });
           }
 
-          response_.status(200).send({
+          return response_.status(200).send({
             done: true,
-            decodedJWT_Token: decodedJWT_Token_,
             response: updatedStats_,
             errors: [],
           });
@@ -127,9 +131,8 @@ const stats = async (
           });
 
           if (typeof insertedStats_ === "undefined") {
-            response_.status(400).send({
+            return response_.status(400).send({
               done: false,
-              decodedJWT_Token: decodedJWT_Token_,
               response: insertedStats_,
               errors: [
                 {
@@ -140,37 +143,30 @@ const stats = async (
             });
           }
 
-          response_.status(200).send({
+          return response_.status(200).send({
             done: true,
-            decodedJWT_Token: decodedJWT_Token_,
             response: insertedStats_,
             errors: [],
           });
         }
 
-        break;
-
       case "GET":
         if (doesStatsExist_) {
-          response_.status(200).send({
+          return response_.status(200).send({
             done: true,
-            decodedJWT_Token: decodedJWT_Token_,
             response: findVideo_,
             errors: [],
           });
         } else {
-          response_.status(200).send({
+          return response_.status(200).send({
             done: true,
-            decodedJWT_Token: decodedJWT_Token_,
             response: "Video not found",
             errors: [],
           });
         }
 
-        break;
-
       default:
-        response_.status(400).send({
+        return response_.status(400).send({
           done: false,
           errors: [
             {
@@ -180,7 +176,6 @@ const stats = async (
             },
           ],
         });
-        break;
     }
   } catch (error) {
     response_.status(500).send({
