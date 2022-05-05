@@ -280,4 +280,27 @@ export const updateStats = async (
   return response_;
 };
 
+export const getWatchedVideos = async (token_: string, userId_: string) => {
+  const graphQL_Query = `
+  query getWatchedVideos($userId: String!) {
+    stats(where: {watched: {_eq: true}, userId: {_eq: $userId}}) {
+      videoId
+      watched
+    }
+  }
+`;
+
+  const response_ = await queryHasuraGraphQL(
+    graphQL_Query,
+    "getWatchedVideos",
+    {
+      userId: userId_,
+      watched: true,
+    },
+    token_
+  );
+
+  return response_?.data.stats;
+};
+
 export default queryHasuraGraphQL;
