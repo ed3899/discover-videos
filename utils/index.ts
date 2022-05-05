@@ -48,25 +48,13 @@ export const verifyJWT_Token = (token_: string) => {
 };
 
 /**
- * @abstract An utility function for getting the userId from the context
+ * @abstract An utility function for getting the userId and JWT token from the context
  * @param context_
  * @returns The userId and Token or a redirect object if not found
  */
 export const useRedirectUser = (context_: GetServerSidePropsContext) => {
   const token_ = context_.req.cookies.token; //?
-
   const userId_ = verifyJWT_Token(token_);
-
-  //? Is this right
-  if (!userId_) {
-    return {
-      props: {},
-      redirect: {
-        destination: "/login",
-        permanent: false,
-      },
-    };
-  }
 
   return {userId: userId_, token: token_};
 };

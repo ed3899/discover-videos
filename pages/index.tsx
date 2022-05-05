@@ -26,13 +26,23 @@ import type {
 export const getServerSideProps = async (
   context_: GetServerSidePropsContext
 ) => {
-  const {userId, token} = useRedirectUser(context_);
+  const {userId: userId_, token: token_} = useRedirectUser(context_);
+
+  if (!userId_ || !token_) {
+    return {
+      props: {},
+      redirect: {
+        destination: "/login",
+        permanent: false,
+      },
+    };
+  }
 
   const disneyVideos = await getVideos("disney trailer");
   const productivityVideos = await getVideos("productivity");
   const travelVideos = await getVideos("travel");
   const popularVideos = await getVideos("popular");
-  const watchItAgainVideos = await getWatchedItAgainVideos(token, userId);
+  const watchItAgainVideos = await getWatchedItAgainVideos(token_, userId_);
 
   return {
     props: {
