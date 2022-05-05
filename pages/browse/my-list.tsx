@@ -4,6 +4,9 @@ import Head from "next/head";
 import NavBar from "../../components/nav/navbar";
 import SectionCards from "../../components/card/section-cards";
 
+//% styles
+import styles from "../../styles/MyList.module.css";
+
 //% type
 import type {NextPage} from "next";
 
@@ -18,9 +21,9 @@ const MyList: NextPage = () => {
         <title>My List</title>
       </Head>
 
-      <main>
+      <main className={styles.main}>
         <NavBar />
-        <div>
+        <div className={styles.sectionWrapper}>
           <SectionCards title="My List" videos={[]} size="small" />
         </div>
       </main>
