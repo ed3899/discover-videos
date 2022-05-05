@@ -281,6 +281,12 @@ export const updateStats = async (
   return response_;
 };
 
+/**
+ * @abstract Get watched videos per user
+ * @param token_ The raw JWT token for Hasura authentication
+ * @param userId_ The issuer coming from the decoded JWT Token
+ * @returns
+ */
 export const getWatchedVideos = async (token_: string, userId_: string) => {
   type WatchedVideosT = {
     videoId: string;
@@ -305,6 +311,27 @@ export const getWatchedVideos = async (token_: string, userId_: string) => {
 
   if (response_?.data.stats)
     return response_?.data.stats as unknown as WatchedVideosT[];
+};
+
+export const getMyListVideos = async (userId_: string, token_: string) => {
+  const graphQL_Query = `
+  query getMyListVideos($userId: String!) {
+    stats(where: {favourited: {_eq: 1}, userId: {_eq: $userId}}) {
+      videoId
+    }
+  }
+`;
+
+  const response_ = await queryHasuraGraphQL(
+    graphQL_Query,
+    "getMyListVideos",
+    {
+      userId: userId_,
+    },
+    token_
+  );
+
+  console.log({response_});
 };
 
 export default queryHasuraGraphQL;
