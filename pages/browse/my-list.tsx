@@ -8,7 +8,7 @@ import NavBar from "../../components/nav/navbar";
 import SectionCards from "../../components/card/section-cards";
 
 //% utils
-import {useRedirectUser} from "../../utils";
+import {RedirectUser} from "../../utils";
 
 //% styles
 import styles from "../../styles/MyList.module.css";
@@ -31,7 +31,7 @@ type MyListDataT = {
 export const getServerSideProps = async (
   context_: GetServerSidePropsContext
 ): Promise<GetServerSidePropsResult<MyListDataT>> => {
-  const {userId: userId_, token: token_} = useRedirectUser(context_);
+  const {userId: userId_, token: token_} = RedirectUser(context_);
 
   // if (!userId_ || !token_) {
   //   return {

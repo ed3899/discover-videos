@@ -52,7 +52,7 @@ export const verifyJWT_Token = (token_: string) => {
  * @param context_
  * @returns The userId and Token or a redirect object if not found
  */
-export const useRedirectUser = (context_: GetServerSidePropsContext) => {
+export const RedirectUser = (context_: GetServerSidePropsContext) => {
   const token_ = context_.req.cookies.token; //?
   const userId_ = verifyJWT_Token(token_);
 

@@ -8,6 +8,9 @@ import React, {ReactEventHandler, useEffect, useState} from "react";
 
 import {magic} from "../lib/magic-client";
 
+//% comps
+import Link from "next/link";
+
 //% utils
 import {traceColourfulRedError} from "../utils";
 
@@ -111,16 +114,18 @@ const Login: NextPage = () => {
 
       <header className={styles.header}>
         <div className={styles.headerWrapper}>
-          <a className={styles.logoLink} href="/">
-            <div className={styles.logoWrapper}>
-              <Image
-                src="/static/netflix.svg"
-                alt="Netflix logo"
-                width="128px"
-                height="34px"
-              />
-            </div>
-          </a>
+          <Link href="/">
+            <a className={styles.logoLink}>
+              <div className={styles.logoWrapper}>
+                <Image
+                  src="/static/netflix.svg"
+                  alt="Netflix logo"
+                  width="128px"
+                  height="34px"
+                />
+              </div>
+            </a>
+          </Link>
         </div>
       </header>
 

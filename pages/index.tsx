@@ -3,7 +3,7 @@ import Head from "next/head";
 import {getWatchedItAgainVideos} from "../lib/videos";
 
 //% utils
-import {useRedirectUser, verifyJWT_Token} from "../utils";
+import {RedirectUser, verifyJWT_Token} from "../utils";
 
 //% comps
 import Banner from "../components/banner/banner";
@@ -26,7 +26,7 @@ import type {
 export const getServerSideProps = async (
   context_: GetServerSidePropsContext
 ) => {
-  const {userId: userId_, token: token_} = useRedirectUser(context_);
+  const {userId: userId_, token: token_} = RedirectUser(context_);
 
   // if (!userId_ || !token_) {
   //   return {
