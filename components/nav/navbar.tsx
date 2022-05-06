@@ -13,17 +13,22 @@ import {traceColourfulRedError} from "../../utils";
 
 //% styles
 import styles from "./navbar.module.css";
+import {responseSymbol} from "next/dist/server/web/spec-compliant/fetch-event";
 
 const NavBar = () => {
   //%
   const [showDropdown, setShowDropdown] = useState(false);
   const [username, setUsername] = useState("");
+  const [didToken, setDidToken] = useState("");
 
   //%
   const router = useRouter();
 
   //%
   useEffect(() => {
+    /**
+     * @abstract Gets the user and didToken from Magic
+     */
     const getUser = async () => {
       try {
         const {email} = await magic!.user.getMetadata();
@@ -31,7 +36,10 @@ const NavBar = () => {
 
         // console.log({didToken});
 
-        if (email) setUsername(email);
+        if (email) {
+          setUsername(email);
+          setDidToken(didToken);
+        }
       } catch (error) {
         console.error(error);
       }
@@ -72,8 +80,18 @@ const NavBar = () => {
     try {
       await magic!.user.logout();
       // console.log(await magic!.user.isLoggedIn());
+      const response = await fetch("/api/logout", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${didToken}`,
+          "Content-Type": "application/json",
+        },
+      });
+
+      await response.json();
     } catch (error) {
       traceColourfulRedError(error, 3);
+      router.push("/login");
     }
   };
 
