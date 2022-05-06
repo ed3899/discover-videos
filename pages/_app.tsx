@@ -16,26 +16,27 @@ import type {AppProps} from "next/app";
 
 function MyApp({Component, pageProps}: AppProps) {
   //%
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   //%
   const router = useRouter();
 
-  useEffect(() => {
-    const redirect = async () => {
-      const isLoggedIn = await magic!.user.isLoggedIn();
+  // useEffect(() => {
+  //   const redirect = async () => {
+  //     const isLoggedIn = await magic!.user.isLoggedIn();
 
-      if (isLoggedIn) {
-        router.push("/");
-      } else {
-        router.push("/login");
-      }
-    };
+  //     if (isLoggedIn) {
+  //       router.push("/");
+  //     } else {
+  //       router.push("/login");
+  //     }
+  //   };
 
-    redirect();
-  }, []);
+  //   redirect();
+  // }, []);
 
   useEffect(() => {
     const handleComplete = () => {
+      console.log("handle Complete route change");
       setIsLoading(false);
     };
 
@@ -46,7 +47,7 @@ function MyApp({Component, pageProps}: AppProps) {
       router.events.off("routeChangeComplete", handleComplete);
       router.events.off("routeChangeError", handleComplete);
     };
-  });
+  }, [router]);
 
   return isLoading ? <Loading /> : <Component {...pageProps} />;
 }

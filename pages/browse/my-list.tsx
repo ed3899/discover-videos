@@ -33,16 +33,16 @@ export const getServerSideProps = async (
 ): Promise<GetServerSidePropsResult<MyListDataT>> => {
   const {userId: userId_, token: token_} = useRedirectUser(context_);
 
-  if (!userId_ || !token_) {
-    return {
-      redirect: {
-        destination: "/login",
-        permanent: false,
-      },
-    };
-  }
+  // if (!userId_ || !token_) {
+  //   return {
+  //     redirect: {
+  //       destination: "/login",
+  //       permanent: false,
+  //     },
+  //   };
+  // }
 
-  const myListVideos_ = await getMyListVideosWrapper(userId_, token_);
+  const myListVideos_ = await getMyListVideosWrapper(userId_!, token_);
 
   return {
     props: {
