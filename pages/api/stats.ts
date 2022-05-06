@@ -1,8 +1,6 @@
 //% libs
 import type {NextApiRequest, NextApiResponse} from "next";
 
-import jwt from "jsonwebtoken";
-
 import {
   findVideoIdByUser,
   insertStatsOne,

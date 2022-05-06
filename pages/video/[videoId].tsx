@@ -109,8 +109,6 @@ const Video: NextPage<
     //? What if no video
 
     if (videoStats_.length > 0) {
-      console.log({videoStats_});
-
       //? Safeguard against undefined or null values
       const favourited_ = videoStats_[0].favourited;
 

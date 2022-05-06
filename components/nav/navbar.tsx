@@ -13,7 +13,6 @@ import {traceColourfulRedError} from "../../utils";
 
 //% styles
 import styles from "./navbar.module.css";
-import {responseSymbol} from "next/dist/server/web/spec-compliant/fetch-event";
 
 const NavBar = () => {
   //%
@@ -33,8 +32,6 @@ const NavBar = () => {
       try {
         const {email} = await magic!.user.getMetadata();
         const didToken = await magic!.user.getIdToken();
-
-        // console.log({didToken});
 
         if (email) {
           setUsername(email);
@@ -79,7 +76,6 @@ const NavBar = () => {
   const handleSignOut: ReactEventHandler<HTMLAnchorElement> = async () => {
     try {
       await magic!.user.logout();
-      // console.log(await magic!.user.isLoggedIn());
       const response = await fetch("/api/logout", {
         method: "POST",
         headers: {
