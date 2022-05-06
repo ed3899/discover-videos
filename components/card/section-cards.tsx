@@ -1,5 +1,6 @@
 //% libs
 import {v4 as uuid} from "uuid";
+import cls from "classnames";
 
 //% comps
 import Card from "./card";
@@ -19,18 +20,22 @@ type SectionCardsPropsT = {
   title: string;
   videos: SectionCardVideoT[];
   size: "small" | "large" | "medium";
+  shouldWrap: boolean;
+  shouldScale: boolean;
 };
 const SectionCards = function (_props: Partial<SectionCardsPropsT>) {
   const {
     title: _title = "Default title",
     videos: _videos = [],
     size: _size = "large",
+    shouldWrap: shouldWrap_ = false,
+    shouldScale: shouldScale_ = true,
   } = _props;
 
   return (
     <section className={styles.container}>
       <h2 className={styles.title}>{_title}</h2>
-      <div className={styles.cardWrapper}>
+      <div className={cls(styles.cardWrapper, shouldWrap_ && styles.wrap)}>
         {_videos.map((_video, _idx) => {
           //? Change key
           return (
@@ -40,6 +45,7 @@ const SectionCards = function (_props: Partial<SectionCardsPropsT>) {
               size={_size}
               key={uuid()}
               videoId={_video.id}
+              shouldScale={shouldScale_}
             />
           );
         })}

@@ -64,7 +64,12 @@ const MyList: NextPage<
       <main className={styles.main}>
         <NavBar />
         <div className={styles.sectionWrapper}>
-          <SectionCards title="My List" videos={videos} size="small" />
+          <SectionCards
+            title="My List"
+            videos={videos}
+            size="small"
+            shouldScale={false}
+          />
         </div>
       </main>
     </div>

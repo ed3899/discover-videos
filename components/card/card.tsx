@@ -18,9 +18,16 @@ type CardPropsT = {
   size: "large" | "small" | "medium";
   idx: number;
   videoId: string;
+  shouldScale: boolean;
 };
 const Card = (props: Partial<CardPropsT>) => {
-  const {imgUrl = defaultImg(), size = "medium", idx, videoId} = props;
+  const {
+    imgUrl = defaultImg(),
+    size = "medium",
+    idx,
+    videoId,
+    shouldScale: shouldScale_ = true,
+  } = props;
 
   //%
   const router = useRouter();
@@ -36,11 +43,21 @@ const Card = (props: Partial<CardPropsT>) => {
     small: styles.smItem,
   };
 
+  const shouldHover = (idx_: number) => {
+    if (shouldScale_) {
+      if (idx_ === 0) {
+        return {scaleY: 1.1};
+      }
+      return {scale: 1.1};
+    }
+    return "";
+  };
+
   return (
     <div className={styles.container}>
       <motion.div
         className={cls(styles.imgMotionWrapper, classMap[size])}
-        whileHover={idx === 0 ? {scaleY: 1.1} : {scale: 1.1}}>
+        whileHover={shouldHover(idx!)}>
         <Image
           src={imgUrl}
           alt="unknown"
