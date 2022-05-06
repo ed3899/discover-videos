@@ -1,12 +1,14 @@
 //% libs
 import {useRouter} from "next/router";
-import Link from "next/link";
-import Image from "next/image";
 
 import {useEffect, useState} from "react";
 import type {ReactEventHandler} from "react";
 
 import {magic} from "../../lib/magic-client";
+
+//% comps
+import Link from "next/link";
+import Image from "next/image";
 
 //% utils
 import {traceColourfulRedError} from "../../utils";
@@ -94,16 +96,19 @@ const NavBar = () => {
   return (
     <div className={styles.container}>
       <div className={styles.wrapper}>
-        <a className={styles.logoLink} href="/">
-          <div className={styles.logoWrapper}>
-            <Image
-              src="/static/netflix.svg"
-              alt="Netflix logo"
-              width="128px"
-              height="34px"
-            />
-          </div>
-        </a>
+        <Link href="/">
+          <a className={styles.logoLink}>
+            <div className={styles.logoWrapper}>
+              <Image
+                src="/static/netflix.svg"
+                alt="Netflix logo"
+                width="128px"
+                height="34px"
+              />
+            </div>
+          </a>
+        </Link>
+
         <ul className={styles.navItems}>
           <li className={styles.navItem} onClick={handleOnClickHome}>
             Home

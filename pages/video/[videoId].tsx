@@ -149,7 +149,7 @@ const Video: NextPage<
   //%
   useEffect(() => {
     _getLikeInfo(videoId as string);
-  }, []);
+  }, [videoId]);
 
   //%
   /**
